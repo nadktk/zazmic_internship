@@ -1,9 +1,14 @@
 const express = require('express');
 const https = require('https');
+const bodyParser = require('body-parser');
 
 const routes = require('./routes/api/v1');
 
 const app = express();
+
+// body parser middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 app.use('/api/v1', routes);
 app.get('*', (req, res) => {
