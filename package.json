@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix .",
-    "dev": "nodemon ."
+    "dev": "env-cmd nodemon ."
   },
   "author": "nadktk",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "trailingComma": "all"
   },
   "dependencies": {
+    "env-cmd": "^10.0.1",
     "express": "^4.17.1"
   }
 }
