@@ -19,6 +19,15 @@ app.get('*', (req, res) => {
   https.get(process.env.FRONTEND_URL, (response) => response.pipe(res));
 });
 
+// errors handling
+/* eslint-disable-next-line no-unused-vars */
+app.use((err, req, res, next) => {
+  res.status(500);
+  res.send({
+    error: err.message,
+  });
+});
+
 const port = process.env.PORT || 2632;
-// eslint-disable-next-line no-console
+/* eslint-disable-next-line no-console */
 app.listen(port, () => console.log(`Server is running on port ${port}`));
