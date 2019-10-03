@@ -1,15 +1,7 @@
+const fs = require('fs');
 const express = require('express');
 
 const router = express.Router();
-const fs = require('fs');
-
-/*
-GET /api/v1/users Получаем всех юзеров - DONE
-POST /api/v1/users Добавляем нового юзера
-GET /api/v1/users/:id Получаем юзера по айди
-PUT /api/v1/users/:id Обновляем юзера по айди
-DELETE /api/v1/users/:id Удаляем юзера по айди
-*/
 
 // @route   GET api/v1/users
 // @desc    Get all users
@@ -20,6 +12,43 @@ router.get('/', (req, res) => {
     res.json({
       data: users,
     });
+  });
+});
+
+// @route   GET /api/v1/users/:id
+// @desc    Get a user by id
+router.get('/:id', (req, res) => {
+  fs.readFile('data/users.json', (err, data) => {
+    if (err) throw err;
+    const users = JSON.parse(data);
+    const userById = users.find((user) => user.id === +req.params.id);
+    if (!userById) throw new Error('Wrong user id');
+    res.json({
+      data: userById,
+    });
+  });
+});
+
+// @route   PUT api/v1/users/:id
+// @desc    Update a user by ID
+router.put('/:id', (req, res) => {
+  fs.readFile('data/users.json', (err, data) => {
+    if (err) throw err;
+    const users = JSON.parse(data);
+    const userById = users.find((user) => user.id === +req.params.id);
+    const updatedUser = {
+      ...userById,
+      ...req.body,
+    };
+    const updatedUsers = users.map((user) => (user.id === +req.params.id ? updatedUser : user));
+    fs.writeFile(
+      'data/users.json',
+      JSON.stringify(updatedUsers, null, 2),
+      (error) => {
+        if (error) throw error;
+        res.json({ data: updatedUser });
+      },
+    );
   });
 });
 
@@ -41,6 +70,24 @@ router.post('/', (req, res) => {
       if (error) throw error;
       res.json({ data: newUser });
     });
+  });
+});
+
+// @route   DELETE api/v1/users/:id
+// @desc    Delete a user by ID
+router.delete('/:id', (req, res) => {
+  fs.readFile('data/users.json', (err, data) => {
+    if (err) throw err;
+    const users = JSON.parse(data);
+    const updatedUsers = users.filter((user) => user.id !== +req.params.id);
+    fs.writeFile(
+      'data/users.json',
+      JSON.stringify(updatedUsers, null, 2),
+      (error) => {
+        if (error) throw error;
+        res.json({ data: updatedUsers });
+      },
+    );
   });
 });
 

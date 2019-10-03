@@ -1,7 +1,7 @@
+const fs = require('fs');
 const express = require('express');
 
 const router = express.Router();
-const fs = require('fs');
 
 // @route   GET api/v1/blog
 // @desc    Get all blog records
@@ -67,7 +67,7 @@ router.put('/:id', (req, res) => {
       JSON.stringify(updatedBlog, null, 2),
       (error) => {
         if (error) throw error;
-        res.json({ data: recordById });
+        res.json({ data: updatedRecord });
       },
     );
   });
