@@ -15,9 +15,9 @@ app.use(bodyParser.json());
 // use routers
 app.use('/api/v1/blog', blogRoutes);
 app.use('/api/v1/users', usersRoutes);
-/* eslint-disable-next-line no-console */
-console.log(process.env.FRONTEND_URL);
 app.get('*', (req, res) => {
+  /* eslint-disable-next-line no-console */
+  console.log(process.env.FRONTEND_URL);
   https.get(process.env.FRONTEND_URL, (response) => response.pipe(res));
 });
 
