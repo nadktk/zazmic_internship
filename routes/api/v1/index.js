@@ -4,12 +4,6 @@ const router = express.Router();
 const fs = require('fs');
 
 /*
-Роуты
-GET /api/v1/blog Получаем все записи в блоге - DONE
-POST /api/v1/blog Добавляем новую запись - DONE
-GET /api/v1/blog/:id Получаем запись по айди - DONE
-PUT /api/v1/blog/:id Обновляем запись по айди - DONE
-DELETE /api/v1/blog/:id Удаляем запись по айди
 GET /api/v1/users Получаем всех юзеров
 POST /api/v1/users Добавляем нового юзера
 GET /api/v1/users/:id Получаем юзера по айди
@@ -83,6 +77,24 @@ router.put('/blog/:id', (req, res) => {
       (error) => {
         if (error) throw error;
         res.json({ data: recordById });
+      },
+    );
+  });
+});
+
+// @route   DELETE api/v1/blog/:id
+// @desc    Delete a record by its ID
+router.delete('/blog/:id', (req, res) => {
+  fs.readFile('data/blog.json', (err, data) => {
+    if (err) throw err;
+    const blog = JSON.parse(data);
+    const updatedBlog = blog.filter((rec) => rec.id !== Number(req.params.id));
+    fs.writeFile(
+      'data/blog.json',
+      JSON.stringify(updatedBlog, null, 2),
+      (error) => {
+        if (error) throw error;
+        res.json({ data: updatedBlog });
       },
     );
   });
