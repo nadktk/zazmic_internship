@@ -3,8 +3,10 @@ const express = require('express');
 
 const router = express.Router();
 
-// @route   GET api/v1/blog
-// @desc    Get all blog records
+/**
+@route   GET api/v1/blog
+@desc    Get all blog records
+*/
 router.get('/', (req, res, next) => {
   fs.readFile('data/blog.json', (err, data) => {
     if (err) next(err);
@@ -17,8 +19,10 @@ router.get('/', (req, res, next) => {
   });
 });
 
-// @route   GET api/v1/blog/:id
-// @desc    Get a record by its ID
+/**
+@route   GET api/v1/blog/:id
+@desc    Get a record by its ID
+*/
 router.get('/:id', (req, res, next) => {
   fs.readFile('data/blog.json', (err, data) => {
     if (err) next(err);
@@ -35,8 +39,10 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-// @route   POST api/v1/blog
-// @desc    Add new record to blog
+/**
+@route   POST api/v1/blog
+@desc    Add new record to blog
+*/
 router.post('/', (req, res, next) => {
   fs.readFile('data/blog.json', (err, data) => {
     if (err) next(err);
@@ -58,8 +64,10 @@ router.post('/', (req, res, next) => {
   });
 });
 
-// @route   PUT api/v1/blog/:id
-// @desc    Update a record by its ID
+/**
+@route   PUT api/v1/blog/:id
+@desc    Update a record by its ID
+*/
 router.put('/:id', (req, res, next) => {
   fs.readFile('data/blog.json', (err, data) => {
     if (err) next(err);
@@ -72,7 +80,10 @@ router.put('/:id', (req, res, next) => {
           ...recordById,
           ...req.body,
         };
-        const updatedBlog = blog.map((rec) => (rec.id === +req.params.id ? updatedRecord : rec));
+        /* eslint-disable-next-line arrow-body-style */
+        const updatedBlog = blog.map((rec) => {
+          return rec.id === +req.params.id ? updatedRecord : rec;
+        });
         fs.writeFile(
           'data/blog.json',
           JSON.stringify(updatedBlog, null, 2),
@@ -86,8 +97,10 @@ router.put('/:id', (req, res, next) => {
   });
 });
 
-// @route   DELETE api/v1/blog/:id
-// @desc    Delete a record by its ID
+/**
+@route   DELETE api/v1/blog/:id
+@desc    Delete a record by its ID
+*/
 router.delete('/:id', (req, res, next) => {
   fs.readFile('data/blog.json', (err, data) => {
     if (err) next(err);

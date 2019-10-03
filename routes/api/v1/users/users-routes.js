@@ -3,8 +3,10 @@ const express = require('express');
 
 const router = express.Router();
 
-// @route   GET api/v1/users
-// @desc    Get all users
+/**
+@route   GET api/v1/users
+@desc    Get all users
+*/
 router.get('/', (req, res, next) => {
   fs.readFile('data/users.json', (err, data) => {
     if (err) next(err);
@@ -17,8 +19,10 @@ router.get('/', (req, res, next) => {
   });
 });
 
-// @route   GET /api/v1/users/:id
-// @desc    Get a user by id
+/**
+@route   GET /api/v1/users/:id
+@desc    Get a user by id
+*/
 router.get('/:id', (req, res, next) => {
   fs.readFile('data/users.json', (err, data) => {
     if (err) next(err);
@@ -35,8 +39,10 @@ router.get('/:id', (req, res, next) => {
   });
 });
 
-// @route   PUT api/v1/users/:id
-// @desc    Update a user by ID
+/**
+@route   PUT api/v1/users/:id
+@desc    Update a user by ID
+*/
 router.put('/:id', (req, res, next) => {
   fs.readFile('data/users.json', (err, data) => {
     if (err) next(err);
@@ -66,8 +72,10 @@ router.put('/:id', (req, res, next) => {
   });
 });
 
-// @route   POST api/v1/users
-// @desc    Add new user
+/**
+@route   POST api/v1/users
+@desc    Add new user
+*/
 router.post('/', (req, res, next) => {
   fs.readFile('data/users.json', (err, data) => {
     if (err) next(err);
@@ -93,8 +101,10 @@ router.post('/', (req, res, next) => {
   });
 });
 
-// @route   DELETE api/v1/users/:id
-// @desc    Delete a user by ID
+/**
+@route   DELETE api/v1/users/:id
+@desc    Delete a user by ID
+*/
 router.delete('/:id', (req, res, next) => {
   fs.readFile('data/users.json', (err, data) => {
     if (err) next(err);
