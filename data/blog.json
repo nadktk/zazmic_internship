@@ -1,16 +1,16 @@
 [
   {
-    "id": 1,
-    "title": "New Record",
-    "content": "content",
-    "author": "author",
-    "publishedAt": "12:15"
+    "id": 3,
+    "title": "new",
+    "content": "Something new",
+    "author": "nadktk",
+    "publishedAt": "4"
   },
   {
-    "title": "The Disconnect Between Those Who Design Artificial Intelligence and Those Most Affected by It",
-    "content": "Artificial intelligence and automation are continuing to drill deeper into our society.\nIn the business industry, companies are now utilizing the voice recognition provided by intelligent personal assistants such as Alexa, Cortana, and Siri to speed up their tasks.\nIn the transport industry, artificial intelligence powers the upcoming self-driving cars and helps to manage the flow of traffic.\nIn the education sector, artificial intelligence is used to support personalized learning systems.\nIn healthcare, new diagnostic tools and decision-support technologies are being powered by artificial intelligence.\nIn the retail sector, artificial intelligence is improving the design of warehouse facilities to make the process more efficient.\nIn the film industry, artificial intelligence is being used to compose orchestral music and generate short pieces of film\nIn the humanitarian sector, artificial intelligence is being used to support the delivery of the Sustainable Development Goals.\nYet, there seems to be a disconnect between the people designing and implementing these systems, and those who will be most affected by the outcome.\nThe reported median annual salary for an AI programmer in the UK in 2019 is currently around £60,000. Meanwhile, the reported median annual salary for all workers in the UK is reportedly around £36,611.",
-    "author": "Aimee Pearcy",
-    "publishedAt": "Sep 29",
-    "id": 2
+    "id": 4,
+    "title": "Alice in Wonderland",
+    "content": "Lewis Carrol was a great writer. He was nice",
+    "author": "Lewis",
+    "publishedAt": "17 oct"
   }
 ]

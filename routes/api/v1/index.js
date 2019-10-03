@@ -1,4 +1,5 @@
 const express = require('express');
+
 const router = express.Router();
 const fs = require('fs');
 
@@ -7,9 +8,9 @@ const fs = require('fs');
 GET /api/v1/blog Получаем все записи в блоге - DONE
 POST /api/v1/blog Добавляем новую запись - DONE
 GET /api/v1/blog/:id Получаем запись по айди - DONE
-PUT /api/v1/blog/:id Обновляем запись по айди
+PUT /api/v1/blog/:id Обновляем запись по айди - DONE
 DELETE /api/v1/blog/:id Удаляем запись по айди
-GET /api/v1/users Получаем всех юзеров 
+GET /api/v1/users Получаем всех юзеров
 POST /api/v1/users Добавляем нового юзера
 GET /api/v1/users/:id Получаем юзера по айди
 PUT /api/v1/users/:id Обновляем юзера по айди
@@ -44,25 +45,46 @@ router.get('/blog/:id', (req, res) => {
 });
 
 // @route   POST api/v1/blog
-// @desc    add new record to blog
+// @desc    Add new record to blog
 router.post('/blog', (req, res) => {
   fs.readFile('data/blog.json', 'utf8', (err, data) => {
     if (err) throw err;
     const blog = JSON.parse(data);
-    const maxId = Math.max(...blog.map((record) => record.id));
-    blog.push({
-      id: maxId + 1,
-      title: req.body.title,
-      content: req.body.content,
-      author: req.body.author,
-      publishedAt: req.body.publishedAt,
+    const newId = Math.max(...blog.map((record) => record.id)) + 1;
+    const newUser = {
+      id: newId,
+      ...req.body,
+    };
+    blog.push(newUser);
+    fs.writeFile('data/blog.json', JSON.stringify(blog, null, 2), (error) => {
+      if (error) throw error;
+      res.json({ data: newUser });
     });
-    fs.writeFile('data/blog.json', JSON.stringify(blog, null, 2), (err) => {
-      if (err) throw err;
-      res.json({
-        message: 'OK',
-      });
-    });
+  });
+});
+
+// @route   PUT api/v1/blog/:id
+// @desc    Update a record by its ID
+router.put('/blog/:id', (req, res) => {
+  fs.readFile('data/blog.json', (err, data) => {
+    if (err) throw err;
+    const blog = JSON.parse(data);
+    const recordById = blog.find((rec) => rec.id === Number(req.params.id));
+    const updatedRecord = {
+      ...recordById,
+      ...req.body,
+    };
+    const updatedBlog = blog.map(
+      (rec) => rec.id === Number(req.params.id ? updatedRecord : rec),
+    );
+    fs.writeFile(
+      'data/blog.json',
+      JSON.stringify(updatedBlog, null, 2),
+      (error) => {
+        if (error) throw error;
+        res.json({ data: recordById });
+      },
+    );
   });
 });
 
