@@ -10,5 +10,11 @@
     "email": "email@email.com",
     "firstName": "Jane",
     "lastName": "Doe"
+  },
+  {
+    "id": 3,
+    "firstName": "Надія",
+    "lastName": "Каткова",
+    "email": "nadezhda.katkova@gmail.com"
   }
 ]

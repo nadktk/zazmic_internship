@@ -2,7 +2,9 @@ const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
 
-const routes = require('./routes/api/v1');
+// import routers
+const blogRoutes = require('./routes/api/v1/blog/blog-routes');
+const usersRoutes = require('./routes/api/v1/users/users-routes');
 
 const app = express();
 
@@ -10,7 +12,9 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-app.use('/api/v1', routes);
+// use routers
+app.use('/api/v1/blog', blogRoutes);
+app.use('/api/v1/users', usersRoutes);
 app.get('*', (req, res) => {
   https.get(process.env.FRONTEND_URL, (response) => response.pipe(res));
 });
