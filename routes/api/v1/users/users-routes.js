@@ -1,131 +1,79 @@
-const fs = require('fs');
 const express = require('express');
 const { userIsValid } = require('../../../../utils/validation');
+const DB = require('../../../../utils/db');
+const {
+  CONNECT_ERR,
+  USERID_ERR,
+  USERDATA_ERR,
+} = require('../../../../utils/error-messages');
 
 const router = express.Router();
+const usersDB = new DB('data/users.json');
 
 /**
 @route   GET api/v1/users
 @desc    Get all users
 */
-router.get('/', (req, res, next) => {
-  fs.readFile('data/users.json', (err, data) => {
-    if (err) next(err);
-    else {
-      const users = JSON.parse(data);
-      res.json({
-        data: users,
-      });
-    }
-  });
+
+router.get('/', async (req, res, next) => {
+  const users = await usersDB
+    .findAll()
+    .catch(() => next(new Error(CONNECT_ERR)));
+  if (users) res.json({ data: users });
 });
 
 /**
 @route   GET /api/v1/users/:id
 @desc    Get a user by id
 */
-router.get('/:id', (req, res, next) => {
-  fs.readFile('data/users.json', (err, data) => {
-    if (err) next(err);
-    else {
-      const users = JSON.parse(data);
-      const userById = users.find((user) => user.id === +req.params.id);
-      if (!userById) next(new Error('Wrong user id'));
-      else {
-        res.json({
-          data: userById,
-        });
-      }
-    }
-  });
+
+router.get('/:id', async (req, res, next) => {
+  const userById = await usersDB
+    .find(req.params.id)
+    .catch(() => next(new Error(CONNECT_ERR)));
+  if (!userById) next(new Error(USERID_ERR));
+  else res.json({ data: userById });
 });
 
 /**
 @route   PUT api/v1/users/:id
 @desc    Update a user by ID
 */
-router.put('/:id', (req, res, next) => {
+
+router.put('/:id', async (req, res, next) => {
   if (userIsValid(req.body)) {
-    fs.readFile('data/users.json', (err, data) => {
-      if (err) next(err);
-      else {
-        const users = JSON.parse(data);
-        const userById = users.find((user) => user.id === +req.params.id);
-        if (!userById) next(new Error('Wrong user id'));
-        else {
-          const updUser = {
-            ...userById,
-            ...req.body,
-          };
-          /* eslint-disable-next-line arrow-body-style */
-          const updUsers = users.map((user) => {
-            return user.id === +req.params.id ? updUser : user;
-          });
-          fs.writeFile(
-            'data/users.json',
-            JSON.stringify(updUsers, null, 2),
-            (error) => {
-              if (error) next(error);
-              else res.json({ data: updUser });
-            },
-          );
-        }
-      }
-    });
-  } else next(new Error('Wrong user data'));
+    const newUsers = await usersDB
+      .update(req.params.id, req.body)
+      .catch(() => next(new Error(CONNECT_ERR)));
+    if (newUsers) res.json({ data: newUsers });
+  } else next(new Error(USERDATA_ERR));
 });
 
 /**
 @route   POST api/v1/users
 @desc    Add new user
 */
-router.post('/', (req, res, next) => {
+
+router.post('/', async (req, res, next) => {
   if (userIsValid(req.body)) {
-    fs.readFile('data/users.json', (err, data) => {
-      if (err) next(err);
-      else {
-        const users = JSON.parse(data);
-        const newId = users.length
-          ? Math.max(...users.map((user) => user.id)) + 1
-          : 1;
-        const newUser = {
-          id: newId,
-          ...req.body,
-        };
-        users.push(newUser);
-        fs.writeFile(
-          'data/users.json',
-          JSON.stringify(users, null, 2),
-          (error) => {
-            if (error) next(error);
-            else res.json({ data: newUser });
-          },
-        );
-      }
-    });
-  } else next(new Error('Wrong user data'));
+    const newUsers = await usersDB
+      .create(req.body)
+      .catch(() => next(new Error(CONNECT_ERR)));
+    if (newUsers) res.json({ data: newUsers });
+  } else next(new Error(USERDATA_ERR));
 });
 
 /**
 @route   DELETE api/v1/users/:id
 @desc    Delete a user by ID
 */
-router.delete('/:id', (req, res, next) => {
-  fs.readFile('data/users.json', (err, data) => {
-    if (err) next(err);
-    else {
-      const users = JSON.parse(data);
-      const updatedUsers = users.filter((user) => user.id !== +req.params.id);
-      fs.writeFile(
-        'data/users.json',
-        JSON.stringify(updatedUsers, null, 2),
-        (error) => {
-          if (error) next(error);
-          else res.send();
-        },
-      );
-    }
-  });
+
+router.delete('/:id', async (req, res, next) => {
+  const deletedUser = await usersDB
+    .delete(req.params.id)
+    .catch(() => next(new Error(CONNECT_ERR)));
+  if (!deletedUser) next(new Error(USERID_ERR));
+  else res.json({ data: deletedUser });
 });
 
 module.exports = router;
