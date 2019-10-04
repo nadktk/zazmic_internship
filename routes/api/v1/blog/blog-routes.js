@@ -1,5 +1,6 @@
 const fs = require('fs');
 const express = require('express');
+const { recordIsValid } = require('../../../../utils/validation');
 
 const router = express.Router();
 
@@ -44,24 +45,30 @@ router.get('/:id', (req, res, next) => {
 @desc    Add new record to blog
 */
 router.post('/', (req, res, next) => {
-  fs.readFile('data/blog.json', (err, data) => {
-    if (err) next(err);
-    else {
-      const blog = JSON.parse(data);
-      const newId = blog.length
-        ? Math.max(...blog.map((record) => record.id)) + 1
-        : 1;
-      const newRecord = {
-        id: newId,
-        ...req.body,
-      };
-      blog.push(newRecord);
-      fs.writeFile('data/blog.json', JSON.stringify(blog, null, 2), (error) => {
-        if (error) next(error);
-        else res.json({ data: newRecord });
-      });
-    }
-  });
+  if (recordIsValid(req.body)) {
+    fs.readFile('data/blog.json', (err, data) => {
+      if (err) next(err);
+      else {
+        const blog = JSON.parse(data);
+        const newId = blog.length
+          ? Math.max(...blog.map((record) => record.id)) + 1
+          : 1;
+        const newRecord = {
+          id: newId,
+          ...req.body,
+        };
+        blog.push(newRecord);
+        fs.writeFile(
+          'data/blog.json',
+          JSON.stringify(blog, null, 2),
+          (error) => {
+            if (error) next(error);
+            else res.json({ data: newRecord });
+          },
+        );
+      }
+    });
+  } else next(new Error('Wrong record data'));
 });
 
 /**
@@ -69,32 +76,34 @@ router.post('/', (req, res, next) => {
 @desc    Update a record by its ID
 */
 router.put('/:id', (req, res, next) => {
-  fs.readFile('data/blog.json', (err, data) => {
-    if (err) next(err);
-    else {
-      const blog = JSON.parse(data);
-      const recordById = blog.find((rec) => rec.id === +req.params.id);
-      if (!recordById) next(new Error('Wrong record id'));
+  if (recordIsValid(req.body)) {
+    fs.readFile('data/blog.json', (err, data) => {
+      if (err) next(err);
       else {
-        const updatedRecord = {
-          ...recordById,
-          ...req.body,
-        };
-        /* eslint-disable-next-line arrow-body-style */
-        const updatedBlog = blog.map((rec) => {
-          return rec.id === +req.params.id ? updatedRecord : rec;
-        });
-        fs.writeFile(
-          'data/blog.json',
-          JSON.stringify(updatedBlog, null, 2),
-          (error) => {
-            if (error) next(error);
-            else res.json({ data: updatedRecord });
-          },
-        );
+        const blog = JSON.parse(data);
+        const recordById = blog.find((rec) => rec.id === +req.params.id);
+        if (!recordById) next(new Error('Wrong record id'));
+        else {
+          const updatedRecord = {
+            ...recordById,
+            ...req.body,
+          };
+          /* eslint-disable-next-line arrow-body-style */
+          const updatedBlog = blog.map((rec) => {
+            return rec.id === +req.params.id ? updatedRecord : rec;
+          });
+          fs.writeFile(
+            'data/blog.json',
+            JSON.stringify(updatedBlog, null, 2),
+            (error) => {
+              if (error) next(error);
+              else res.json({ data: updatedRecord });
+            },
+          );
+        }
       }
-    }
-  });
+    });
+  } else next(new Error('Wrong record data'));
 });
 
 /**

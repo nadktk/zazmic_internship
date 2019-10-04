@@ -4,5 +4,17 @@
     "firstName": "Nadiia",
     "lastName": "Katkova",
     "email": "nadezhda.katkova@gmail.com"
+  },
+  {
+    "id": 2,
+    "firstName": "new",
+    "lastName": "interesting",
+    "email": "me"
+  },
+  {
+    "id": 3,
+    "firstName": "dfgdfg",
+    "lastName": "dfgdfg",
+    "email": "dfgdfg@sdf.ghjg"
   }
 ]

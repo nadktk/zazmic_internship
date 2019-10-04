@@ -16,8 +16,6 @@ app.use(bodyParser.json());
 app.use('/api/v1/blog', blogRoutes);
 app.use('/api/v1/users', usersRoutes);
 app.get('*', (req, res) => {
-  /* eslint-disable-next-line no-console */
-  console.log(process.env.FRONTEND_URL);
   https.get(process.env.FRONTEND_URL, (response) => response.pipe(res));
 });
 
