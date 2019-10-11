@@ -11,13 +11,3 @@ Object.values(models).forEach((model) => {
 });
 
 module.exports = models;
-
-/*
-const modelNames = Object.keys(models);
-
-modelNames.forEach((modelName) => {
-  if (models[modelName].associate) {
-    models[modelName].associate(models);
-  }
-});
-*/
