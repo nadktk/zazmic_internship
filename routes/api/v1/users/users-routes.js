@@ -30,7 +30,7 @@ router.get('/', async (req, res, next) => {
       },
     ],
     group: ['User.id'],
-  }).catch(next);
+  }).catch(() => next(new Error(CONNECT_ERR)));
   return res.json({ data: users });
 });
 
@@ -99,6 +99,7 @@ router.get('/:id/blog', async (req, res, next) => {
   const { id } = req.params;
   const articles = await Article.findAll({
     where: { authorId: id },
+    include: [{ model: User, as: 'author' }],
     order: [['id', 'DESC']],
   }).catch(() => next(new Error(CONNECT_ERR)));
   return res.json({ data: articles });
