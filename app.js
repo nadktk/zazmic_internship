@@ -1,6 +1,10 @@
+/* eslint-disable no-console */
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
+
+// import sequelize instance
+const db = require('./utils/database');
 
 // import routers
 const blogRoutes = require('./routes/api/v1/blog/blog-routes');
@@ -22,12 +26,20 @@ app.get('*', (req, res) => {
 // errors handling
 /* eslint-disable-next-line no-unused-vars */
 app.use((err, req, res, next) => {
-  res.status(500);
+  if (!res.headerSent) res.status(500);
   res.send({
     error: err.message,
   });
 });
 
 const port = process.env.PORT || 2632;
-/* eslint-disable-next-line no-console */
-app.listen(port, () => console.log(`Server is running on port ${port}`));
+
+// database
+db.sync()
+  .then(() => {
+    console.log('Connected to DB');
+    app.listen(port, () => console.log(`Server is running on port ${port}`));
+  })
+  .catch((err) => {
+    console.error('Unable to connect to the database:', err);
+  });

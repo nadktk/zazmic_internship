@@ -1,6 +1,8 @@
 /* eslint-disable-next-line arrow-body-style */
 const recordIsValid = (record) => {
-  return record.title && record.content && record.author && record.publishedAt;
+  return (
+    record.title && record.content && record.authorId && record.publishedAt
+  );
 };
 
 /* eslint-disable-next-line arrow-body-style */
