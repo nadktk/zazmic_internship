@@ -2,13 +2,20 @@
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
+const path = require('path');
 
 // import sequelize instance
-const db = require('./utils/database');
+const db = require(path.join(__dirname, 'utils', 'database.js'));
 
 // import routers
-const blogRoutes = require('./routes/api/v1/blog/blog-routes');
-const usersRoutes = require('./routes/api/v1/users/users-routes');
+const blogRoutes = require(path.join(__dirname, 'routes', 'api', 'v1', 'blog'));
+const usersRoutes = require(path.join(
+  __dirname,
+  'routes',
+  'api',
+  'v1',
+  'users',
+));
 
 const app = express();
 

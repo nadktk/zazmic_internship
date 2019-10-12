@@ -1,14 +1,16 @@
 const express = require('express');
-const { userIsValid } = require('../../../../utils/validation');
-const {
-  CONNECT_ERR,
-  USERID_ERR,
-  USERDATA_ERR,
-} = require('../../../../utils/error-messages');
+const path = require('path');
+
+const root = path.dirname(process.mainModule.filename);
+const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
+const { User, Article } = require(path.join(root, 'models'));
+const { CONNECT_ERR, USERID_ERR, USERDATA_ERR } = require(path.join(
+  root,
+  'utils',
+  'error-messages',
+));
 
 const router = express.Router();
-
-const { User, Article } = require('../../../../models');
 
 /**
  * @route   GET api/v1/users
@@ -31,7 +33,7 @@ router.get('/', async (req, res, next) => {
     ],
     group: ['User.id'],
   }).catch(() => next(new Error(CONNECT_ERR)));
-  return res.json({ data: users });
+  res.json({ data: users });
 });
 
 /**
@@ -55,15 +57,15 @@ router.get('/:id', async (req, res, next) => {
  */
 
 router.put('/:id', async (req, res, next) => {
+  const { id } = req.params;
   if (userIsValid(req.body)) {
     await User.update(req.body, {
-      where: { id: req.params.id },
+      where: { id },
       individualHooks: true,
     }).catch(() => next(new Error(CONNECT_ERR)));
     delete req.body.password;
     res.json({ data: req.body });
-  }
-  next(new Error(USERDATA_ERR));
+  } else next(new Error(USERDATA_ERR));
 });
 
 /**
@@ -102,7 +104,7 @@ router.get('/:id/blog', async (req, res, next) => {
     include: [{ model: User, as: 'author' }],
     order: [['id', 'DESC']],
   }).catch(() => next(new Error(CONNECT_ERR)));
-  return res.json({ data: articles });
+  res.json({ data: articles });
 });
 
 module.exports = router;

@@ -1,5 +1,7 @@
-const User = require('./User');
-const Article = require('./Article');
+const path = require('path');
+
+const User = require(path.join(__dirname, 'User'));
+const Article = require(path.join(__dirname, 'Article'));
 
 const models = {
   User,

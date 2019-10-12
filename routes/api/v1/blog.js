@@ -1,14 +1,16 @@
 const express = require('express');
-const { recordIsValid } = require('../../../../utils/validation');
-const {
-  CONNECT_ERR,
-  BLOGID_ERR,
-  BLOGDATA_ERR,
-} = require('../../../../utils/error-messages');
+const path = require('path');
+
+const root = path.dirname(process.mainModule.filename);
+const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
+const { User, Article } = require(path.join(root, 'models'));
+const { CONNECT_ERR, BLOGID_ERR, BLOGDATA_ERR } = require(path.join(
+  root,
+  'utils',
+  'error-messages',
+));
 
 const router = express.Router();
-
-const { Article, User } = require('../../../../models');
 
 /**
  * @route   GET api/v1/blog
@@ -20,7 +22,7 @@ router.get('/', async (req, res, next) => {
     order: [['id', 'DESC']],
     include: [{ model: User, as: 'author' }],
   }).catch(() => next(new Error(CONNECT_ERR)));
-  return res.json({ data: articles });
+  res.json({ data: articles });
 });
 
 /**
@@ -46,13 +48,13 @@ router.get('/:id', async (req, res, next) => {
  */
 
 router.put('/:id', async (req, res, next) => {
+  const { id } = req.params;
   if (recordIsValid(req.body)) {
     await Article.update(req.body, {
-      where: { id: req.params.id },
+      where: { id },
     }).catch(() => next(new Error(CONNECT_ERR)));
     res.json({ data: req.body });
-  }
-  next(new Error(BLOGDATA_ERR));
+  } else next(new Error(BLOGDATA_ERR));
 });
 
 /**
