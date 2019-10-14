@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     /* eslint-disable-next-line implicit-arrow-linebreak */
-    queryInterface.createTable('Users', {
+    queryInterface.createTable('users', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -35,5 +35,5 @@ module.exports = {
         type: Sequelize.DATE,
       },
     }),
-  down: (queryInterface) => queryInterface.dropTable('Users'),
+  down: (queryInterface) => queryInterface.dropTable('users'),
 };

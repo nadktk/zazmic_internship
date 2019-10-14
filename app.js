@@ -42,7 +42,7 @@ app.use((err, req, res, next) => {
 const port = process.env.PORT || 2632;
 
 // database
-db.sync()
+db.authenticate()
   .then(() => {
     console.log('Connected to DB');
     app.listen(port, () => console.log(`Server is running on port ${port}`));
