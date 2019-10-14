@@ -1,10 +1,11 @@
 const express = require('express');
 const path = require('path');
+const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models'));
-const { CONNECT_ERR, USERID_ERR, USERDATA_ERR } = require(path.join(
+const { USERID_ERR, USERDATA_ERR } = require(path.join(
   root,
   'utils',
   'error-messages',
@@ -17,94 +18,111 @@ const router = express.Router();
  * @desc    Get all users
  */
 
-router.get('/', async (req, res, next) => {
-  const users = await User.findAll({
-    attributes: {
-      include: [
-        [User.sequelize.fn('COUNT', User.sequelize.col('title')), 'articles'],
-      ],
-    },
-    include: [
-      {
-        model: Article,
-        as: 'article',
-        attributes: [],
+router.get(
+  '/',
+  asyncHandler(async (req, res, next) => {
+    const users = await User.findAll({
+      attributes: {
+        include: [
+          [User.sequelize.fn('COUNT', User.sequelize.col('title')), 'articles'],
+        ],
       },
-    ],
-    group: ['User.id'],
-  }).catch(() => next(new Error(CONNECT_ERR)));
-  res.json({ data: users });
-});
+      include: [
+        {
+          model: Article,
+          as: 'article',
+          attributes: [],
+        },
+      ],
+      group: ['User.id'],
+    });
+    res.json({ data: users });
+  }),
+);
 
 /**
  * @route   GET /api/v1/users/:id
  * @desc    Get a user by id
  */
 
-router.get('/:id', async (req, res, next) => {
-  const userById = await User.findByPk(req.params.id).catch(() => next(new Error(CONNECT_ERR)));
-  if (userById) {
+router.get(
+  '/:id',
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const userById = await User.findByPk(id);
+    if (!userById) {
+      res.status(404);
+      throw new Error(USERID_ERR);
+    }
     res.json({ data: userById });
-  } else {
-    res.status(404);
-    next(new Error(USERID_ERR));
-  }
-});
+  }),
+);
 
 /**
  * @route   PUT api/v1/users/:id
  * @desc    Update a user by ID
  */
 
-router.put('/:id', async (req, res, next) => {
-  const { id } = req.params;
-  if (userIsValid(req.body)) {
-    await User.update(req.body, {
+router.put(
+  '/:id',
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    if (!userIsValid(req.body)) throw new Error(USERDATA_ERR);
+    const [updatedRows] = await User.update(req.body, {
       where: { id },
       individualHooks: true,
-    }).catch(() => next(new Error(CONNECT_ERR)));
+    });
+    if (!updatedRows) throw new Error(USERID_ERR);
     delete req.body.password;
     res.json({ data: req.body });
-  } else next(new Error(USERDATA_ERR));
-});
+  }),
+);
 
 /**
  * @route   POST api/v1/users
  * @desc    Add new user
  */
 
-router.post('/', async (req, res, next) => {
-  if (userIsValid(req.body)) {
-    const newUser = await User.create(req.body).catch(() => next(new Error(CONNECT_ERR)));
+router.post(
+  '/',
+  asyncHandler(async (req, res, next) => {
+    if (!userIsValid(req.body)) throw new Error(USERDATA_ERR);
+    const newUser = await User.create(req.body);
     delete newUser.password;
     res.json({ data: newUser });
-  } else next(new Error(USERDATA_ERR));
-});
+  }),
+);
 
 /**
  * @route   DELETE api/v1/users/:id
  * @desc    Delete a user by ID
  */
 
-router.delete('/:id', async (req, res, next) => {
-  const { id } = req.params;
-  await User.destroy({ where: { id } }).catch(() => next(new Error(CONNECT_ERR)));
-  res.send();
-});
+router.delete(
+  '/:id',
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    await User.destroy({ where: { id } });
+    res.send();
+  }),
+);
 
 /**
  * @route   GET api/v1/users/:id/blog
  * @desc    Find blog records by author's ID
  */
 
-router.get('/:id/blog', async (req, res, next) => {
-  const { id } = req.params;
-  const articles = await Article.findAll({
-    where: { authorId: id },
-    include: [{ model: User, as: 'author' }],
-    order: [['id', 'DESC']],
-  }).catch(() => next(new Error(CONNECT_ERR)));
-  res.json({ data: articles });
-});
+router.get(
+  '/:id/blog',
+  asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const articles = await Article.findAll({
+      where: { authorId: id },
+      include: [{ model: User, as: 'author' }],
+      order: [['id', 'DESC']],
+    });
+    res.json({ data: articles });
+  }),
+);
 
 module.exports = router;

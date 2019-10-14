@@ -31,9 +31,8 @@ app.get('*', (req, res) => {
 });
 
 // errors handling
-/* eslint-disable-next-line no-unused-vars */
 app.use((err, req, res, next) => {
-  if (!res.headerSent) res.status(500);
+  if (res.statusCode === 200) res.status(500);
   res.send({
     error: err.message,
   });
