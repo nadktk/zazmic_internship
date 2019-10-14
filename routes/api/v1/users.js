@@ -102,7 +102,8 @@ router.delete(
   '/:id',
   asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    await User.destroy({ where: { id } });
+    const destroyedRows = await User.destroy({ where: { id } });
+    if (!destroyedRows) throw new Error(USERID_ERR);
     res.send();
   }),
 );
