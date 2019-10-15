@@ -1,1 +1,3 @@
-# homework-5
+# Zazmic Blog
+
+Node.js Internship stage-2 project
