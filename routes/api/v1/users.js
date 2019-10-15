@@ -73,8 +73,8 @@ router.put(
       individualHooks: true,
     });
     if (!updatedRows) throw new Error(USERID_ERR);
-    delete req.body.password;
-    res.json({ data: req.body });
+    const updatedUser = await User.findByPk(id);
+    res.json({ data: updatedUser });
   }),
 );
 

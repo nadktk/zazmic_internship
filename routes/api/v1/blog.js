@@ -63,7 +63,8 @@ router.put(
       where: { id },
     });
     if (!affectedRows) throw new Error(BLOGID_ERR);
-    res.json({ data: req.body });
+    const updatedArticle = await Article.findByPk(id);
+    res.json({ data: updatedArticle });
   }),
 );
 
