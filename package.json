@@ -37,6 +37,8 @@
     "mongodb": "^3.3.2",
     "mongoose": "^5.7.5",
     "mysql2": "^1.7.0",
-    "sequelize": "^5.19.5"
+    "sequelize": "^5.19.5",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.0"
   }
 }
