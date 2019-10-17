@@ -3,6 +3,7 @@ const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
 const path = require('path');
+const mongoose = require('mongoose');
 
 // import sequelize instance
 const db = require(path.join(__dirname, 'utils', 'database.js'));
@@ -38,14 +39,25 @@ app.use((err, req, res, next) => {
   });
 });
 
-const port = process.env.PORT || 2632;
-
-// database
-db.authenticate()
-  .then(() => {
-    console.log('Connected to DB');
-    app.listen(port, () => console.log(`Server is running on port ${port}`));
+// databases
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    replicaSet: 'mentorship-shard-0',
   })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
+  .then(() => {
+    const port = process.env.PORT || 2632;
+    db.authenticate()
+      .then(() => {
+        console.log('Connected to both databases');
+        app.listen(port, () => console.log(`Server is running on port ${port}`));
+      })
+      .catch((err) => {
+        console.error('Unable to connect to MySQL database:', err);
+      });
+  })
+  .catch((error) => {
+    console.error('Unable to connect to MongoDB database:', error);
   });
