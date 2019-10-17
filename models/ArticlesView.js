@@ -1,4 +1,3 @@
-// articles_views
 const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
@@ -21,4 +20,8 @@ articlesViewSchema.pre('updateOne', function () {
   this.set({ updatedAt: new Date() });
 });
 
-module.exports = mongoose.model('ArticlesView', articlesViewSchema);
+module.exports = mongoose.model(
+  'ArticlesView',
+  articlesViewSchema,
+  'articles_views',
+);
