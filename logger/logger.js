@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 const winston = require('winston');
 require('winston-mongodb');
 const path = require('path');
@@ -13,8 +14,8 @@ const errorsFile = path.join(root, 'logs', 'server-errors.log');
 
 const myFormat = printf(
   ({
-    level, message, label, timest,
-  }) => `${timest} ${level}: ${label ? `[${label}] ` : ''}${message}`,
+    level, message, label, timestamp,
+  }) => `${timestamp} ${level}: ${label ? `[${label}] ` : ''}${message}`,
 );
 
 const infoLogger = createLogger({
