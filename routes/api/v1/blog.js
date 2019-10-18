@@ -3,6 +3,7 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
+const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models'));
 const ArticlesView = require(path.join(root, 'models', 'ArticlesView'));
@@ -106,6 +107,12 @@ router.put(
       );
     }
 
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `Article ${id} was successfully updated`,
+    });
+
     res.json({ data: article });
   }),
 );
@@ -130,6 +137,12 @@ router.post(
       views: 0,
     });
 
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `Article ${newArticle.id} was successfully created`,
+    });
+
     res.json({ data: newArticle });
   }),
 );
@@ -151,6 +164,12 @@ router.delete(
     // MongoDB operations: delete doc from articlesviews collection
     await ArticlesView.deleteOne({
       articleId: id,
+    });
+
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `Article ${id} was successfully deleted`,
     });
 
     res.send();

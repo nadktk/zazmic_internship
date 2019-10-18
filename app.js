@@ -1,9 +1,15 @@
-/* eslint-disable no-console */
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
 const path = require('path');
 const mongoose = require('mongoose');
+
+// logger
+const { infoLogger, errorLogger } = require(path.join(
+  __dirname,
+  'logger',
+  'logger.js',
+));
 
 // import sequelize instance
 const db = require(path.join(__dirname, 'utils', 'database.js'));
@@ -34,30 +40,68 @@ app.get('*', (req, res) => {
 // errors handling
 app.use((err, req, res, next) => {
   if (res.statusCode === 200) res.status(500);
+  errorLogger.log({
+    level: 'error',
+    message: err.message,
+  });
   res.send({
     error: err.message,
   });
 });
 
-// databases
-mongoose
-  .connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useFindAndModify: false,
-    replicaSet: 'mentorship-shard-0',
-  })
-  .then(() => {
-    const port = process.env.PORT || 2632;
-    db.authenticate()
-      .then(() => {
-        console.log('Connected to both databases');
-        app.listen(port, () => console.log(`Server is running on port ${port}`));
-      })
-      .catch((err) => {
-        console.error('Unable to connect to MySQL database:', err);
-      });
-  })
-  .catch((error) => {
-    console.error('Unable to connect to MongoDB database:', error);
+// set mongoose query logger
+mongoose.set('debug', (collectionName, method, query) => {
+  infoLogger.log({
+    label: 'mongodb',
+    level: 'info',
+    message: `Executed ${collectionName}.${method}: ${JSON.stringify(query)}`,
   });
+});
+
+const port = process.env.PORT;
+const mongoUrl = process.env.MONGO_URL;
+
+// connect databases and start server
+const startServer = async () => {
+  await mongoose
+    .connect(mongoUrl, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+      replicaSet: 'mentorship-shard-0',
+    })
+    .catch((err) => {
+      throw new Error(`Unable to connect to MongoDB database (${err.message})`);
+    });
+
+  infoLogger.log({
+    label: 'mongodb',
+    level: 'info',
+    message: 'Connected to MongoDB',
+  });
+
+  await db.authenticate().catch((err) => {
+    throw new Error(`Unable to connect to MySQL database (${err.message})`);
+  });
+
+  infoLogger.log({
+    label: 'mysql',
+    level: 'info',
+    message: 'Connected to MySQL',
+  });
+
+  await app.listen(port);
+
+  infoLogger.log({
+    label: 'server',
+    level: 'info',
+    message: `Server is running on port ${port}`,
+  });
+};
+
+startServer().catch((err) => {
+  errorLogger.log({
+    level: 'error',
+    message: err.message,
+  });
+});

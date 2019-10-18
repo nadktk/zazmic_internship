@@ -3,6 +3,7 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
+const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models'));
 const ArticlesView = require(path.join(root, 'models', 'ArticlesView'));
@@ -99,6 +100,12 @@ router.put(
     if (!updatedRows) throw new Error(USERID_ERR);
     const updatedUser = await User.findByPk(id);
 
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `User ${id} was successfully updated`,
+    });
+
     res.json({ data: updatedUser });
   }),
 );
@@ -115,6 +122,12 @@ router.post(
 
     // MySQL operations: create new user
     const newUser = await User.create(req.body);
+
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `User ${newUser.id} was successfully created`,
+    });
 
     delete newUser.password;
     res.json({ data: newUser });
@@ -138,6 +151,12 @@ router.delete(
     // MongoDB operations: delete docs from articlesviews collection
     await ArticlesView.deleteMany({
       authorId: id,
+    });
+
+    // logging success
+    infoLogger.log({
+      level: 'info',
+      message: `User ${id} was successfully deleted`,
     });
 
     res.send();
