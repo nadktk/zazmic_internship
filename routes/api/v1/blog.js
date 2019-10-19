@@ -9,8 +9,13 @@ const { infoLogger, historyLogger } = require(path.join(
   'logger.js',
 ));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
-const { User, Article } = require(path.join(root, 'models'));
-const ArticlesView = require(path.join(root, 'models', 'ArticlesView'));
+const { User, Article } = require(path.join(root, 'models', 'sequelize'));
+const ArticlesView = require(path.join(
+  root,
+  'models',
+  'mongoose',
+  'ArticlesView',
+));
 const { BLOGID_ERR, BLOGDATA_ERR } = require(path.join(
   root,
   'utils',
