@@ -5,7 +5,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 
 // logger
-const { infoLogger, errorLogger } = require(path.join(
+const { infoLogger, errorLogger, queryLogger } = require(path.join(
   __dirname,
   'logger',
   'logger.js',
@@ -43,6 +43,8 @@ app.use((err, req, res, next) => {
   errorLogger.log({
     level: 'error',
     message: err.message,
+    metadata: `Request URL: ${req.url}`,
+    label: 'express',
   });
   res.send({
     error: err.message,
@@ -51,7 +53,7 @@ app.use((err, req, res, next) => {
 
 // set mongoose query logger
 mongoose.set('debug', (collectionName, method, query) => {
-  infoLogger.log({
+  queryLogger.log({
     label: 'mongodb',
     level: 'info',
     message: `Executed ${collectionName}.${method}: ${JSON.stringify(query)}`,
@@ -103,5 +105,7 @@ startServer().catch((err) => {
   errorLogger.log({
     level: 'error',
     message: err.message,
+    metadata: err.stack,
   });
+  errorLogger.end(() => process.exit(1));
 });

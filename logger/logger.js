@@ -3,67 +3,74 @@ const winston = require('winston');
 require('winston-mongodb');
 const path = require('path');
 
-const root = path.dirname(process.mainModule.filename);
-
 const { format, transports, createLogger } = winston;
-const { combine, timestamp, printf } = format;
+const {
+  combine, timestamp, printf, colorize,
+} = format;
 
-// log destination files
-const logsFile = path.join(root, 'logs', 'server-info.log');
-const errorsFile = path.join(root, 'logs', 'server-errors.log');
+winston.addColors({
+  stack: 'gray',
+});
 
-const myFormat = printf(
+const consoleFormat = printf(
   ({
-    level, message, label, timestamp,
-  }) => `${timestamp} ${level}: ${label ? `[${label}] ` : ''}${message}`,
+    level, message, label, timestamp, metadata,
+  }) => `${timestamp} ${level}: ${
+    label ? `[${label}] ` : ''
+  }${message}\n${colorize().colorize(
+    'stack',
+    metadata ? `${metadata}\n` : '',
+  )}`,
 );
 
-const infoLogger = createLogger({
-  format: combine(timestamp(), myFormat),
-  level: 'info',
-  transports: [
-    new transports.MongoDB({
-      db: process.env.MONGO_URL,
-      collection: 'mongoose_logs',
-      decolorize: true,
-      options: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
+const mongoTransport = (collectionName, opts) => new transports.MongoDB({
+  db: process.env.MONGO_URL,
+  collection: collectionName,
+  ...opts,
+  options: {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  },
+});
+
+const consoleTransport = new transports.Console({
+  format: combine(
+    colorize(),
+    timestamp({
+      format: 'YYYY-MM-DD HH:mm:ss',
     }),
-    new transports.File({ filename: logsFile }),
-  ],
+    consoleFormat,
+  ),
+});
+
+const infoLogger = createLogger({
+  transports: [mongoTransport('info_logs'), consoleTransport],
+});
+
+const queryLogger = createLogger({
+  transports: [mongoTransport('query_logs'), consoleTransport],
 });
 
 const errorLogger = createLogger({
-  format: combine(timestamp(), myFormat),
-  transports: [
-    new transports.MongoDB({
-      db: process.env.MONGO_URL,
-      collection: 'error_logs',
-      decolorize: true,
-      options: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-    }),
-    new transports.Console({ json: false, colorize: true }),
-    new transports.File({ filename: errorsFile }),
-  ],
-  exceptionHandlers: [new transports.File({ filename: errorsFile })],
+  transports: [mongoTransport('error_logs'), consoleTransport],
 });
 
-const rejectionLogger = (err) => {
-  errorLogger.log({
-    level: 'error',
-    label: 'Uncaught rejection',
-    message: err,
+const exRejLogger = (type) => (err) => {
+  const title = {
+    rejection: 'Unhandled rejection: ',
+    exception: 'Uncaught exception: ',
+  };
+  errorLogger.error(title[type] + err.message, {
+    metadata: err.stack,
   });
+  errorLogger.end(() => process.exit(1));
 };
 
-process.on('unhandledRejection', rejectionLogger);
+process.on('unhandledRejection', exRejLogger('rejection'));
+process.on('uncaughtException', exRejLogger('exception'));
 
 module.exports = {
+  queryLogger,
   infoLogger,
   errorLogger,
 };
