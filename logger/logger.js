@@ -51,6 +51,10 @@ const queryLogger = createLogger({
   transports: [mongoTransport('query_logs'), consoleTransport],
 });
 
+const historyLogger = createLogger({
+  transports: [mongoTransport('articles_logs'), consoleTransport],
+});
+
 const errorLogger = createLogger({
   transports: [mongoTransport('error_logs'), consoleTransport],
 });
@@ -72,5 +76,6 @@ process.on('uncaughtException', exRejLogger('exception'));
 module.exports = {
   queryLogger,
   infoLogger,
+  historyLogger,
   errorLogger,
 };

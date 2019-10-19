@@ -3,7 +3,11 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
-const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
+const { infoLogger, historyLogger } = require(path.join(
+  root,
+  'logger',
+  'logger.js',
+));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models'));
 const ArticlesView = require(path.join(root, 'models', 'ArticlesView'));
@@ -77,6 +81,16 @@ router.get(
     } else {
       await ArticlesView.updateOne({ articleId: id }, { views: nextViews });
     }
+
+    // logging article history
+    historyLogger.log({
+      level: 'info',
+      message: `Article ${id} was viewed`,
+      metadata: {
+        articleId: id,
+        time: new Date(),
+      },
+    });
 
     articleById.views = nextViews;
     res.json({ data: articleById });
