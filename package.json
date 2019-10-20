@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix .",
-    "dev": "env-cmd nodemon ."
+    "dev": "env-cmd nodemon .",
+    "history": "env-cmd node history.js"
   },
   "author": "nadktk",
   "license": "MIT",

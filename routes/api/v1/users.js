@@ -6,12 +6,7 @@ const root = path.dirname(process.mainModule.filename);
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models', 'sequelize'));
-const ArticlesView = require(path.join(
-  root,
-  'models',
-  'mongoose',
-  'ArticlesView',
-));
+const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 
 const { USERID_ERR, USERDATA_ERR } = require(path.join(
   root,

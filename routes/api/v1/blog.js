@@ -10,12 +10,7 @@ const { infoLogger, historyLogger } = require(path.join(
 ));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models', 'sequelize'));
-const ArticlesView = require(path.join(
-  root,
-  'models',
-  'mongoose',
-  'ArticlesView',
-));
+const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 const { BLOGID_ERR, BLOGDATA_ERR } = require(path.join(
   root,
   'utils',
@@ -91,10 +86,6 @@ router.get(
     historyLogger.log({
       level: 'info',
       message: `Article ${id} was viewed`,
-      metadata: {
-        articleId: id,
-        time: new Date(),
-      },
     });
 
     articleById.views = nextViews;
