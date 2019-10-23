@@ -1,7 +1,6 @@
 /* eslint-disable no-shadow */
 const winston = require('winston');
 require('winston-mongodb');
-const path = require('path');
 
 const { format, transports, createLogger } = winston;
 const {
@@ -15,12 +14,19 @@ winston.addColors({
 const consoleFormat = printf(
   ({
     level, message, label, timestamp, metadata,
-  }) => `${timestamp} ${level}: ${
-    label ? `[${label}] ` : ''
-  }${message}\n${colorize().colorize(
-    'stack',
-    metadata ? `${metadata}\n` : '',
-  )}`,
+  }) => {
+    const $label = label ? `[${label}] ` : '';
+    let $metadata = '';
+    if (metadata) {
+      $metadata = typeof metadata === 'object'
+        ? `${JSON.stringify(metadata)}\n`
+        : `${metadata}\n`;
+    }
+    return `${timestamp} ${level}: ${$label}${message}\n${colorize().colorize(
+      'stack',
+      $metadata,
+    )}`;
+  },
 );
 
 const mongoTransport = (collectionName, opts) => new transports.MongoDB({

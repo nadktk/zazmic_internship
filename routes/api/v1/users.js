@@ -49,7 +49,7 @@ router.get(
     // MongoDB operations: add viewsCount for each user
     const allViews = await ArticlesView.find();
     users = users.map((user) => {
-      const avs = allViews.filter((doc) => +doc.authorId === user.id);
+      const avs = allViews.filter((doc) => doc.authorId === user.id);
       const viewsCount = avs.length
         ? avs.reduce((sum, doc) => sum + doc.views, 0)
         : 0;
@@ -68,7 +68,7 @@ router.get(
 router.get(
   '/:id',
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: find user by id
     const userById = await User.findByPk(id);
@@ -90,7 +90,7 @@ router.put(
   '/:id',
   asyncHandler(async (req, res, next) => {
     if (!userIsValid(req.body)) throw new Error(USERDATA_ERR);
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: find user and update
     const [updatedRows] = await User.update(req.body, {
@@ -142,7 +142,7 @@ router.post(
 router.delete(
   '/:id',
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: delete user record
     const destroyedRows = await User.destroy({ where: { id } });
@@ -171,7 +171,7 @@ router.delete(
 router.get(
   '/:id/blog',
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: find all author's articles
     let articles = await Article.findAll({
@@ -185,7 +185,7 @@ router.get(
     // MongoDB operations: add views to all articles
     const allViews = await ArticlesView.find({ authorId: id });
     articles = articles.map((article) => {
-      const av = allViews.find((doc) => +doc.articleId === article.id);
+      const av = allViews.find((doc) => doc.articleId === article.id);
       const views = av ? av.views : 0;
       return { ...article, views };
     });

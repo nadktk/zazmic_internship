@@ -1,6 +1,5 @@
 /* eslint-disable no-console */
 const path = require('path');
-const Sequelize = require('sequelize');
 const mongoose = require('mongoose');
 
 const { ArticlesHistory, ArticlesLog } = require(path.join(
@@ -13,11 +12,6 @@ const { ArticlesHistory, ArticlesLog } = require(path.join(
 process.on('exit', (code) => (code === 0
   ? console.log('Articles views history was successfully updated')
   : console.log('History update failed, try once again')));
-
-// sequelize new instance
-const db = new Sequelize(process.env.DATABASE_URL, {
-  logging: false,
-});
 
 // connect databases and start server
 const updateHistory = async () => {
@@ -36,41 +30,51 @@ const updateHistory = async () => {
 
   console.log('Connected to MongoDB');
 
-  await db.authenticate().catch((err) => {
-    throw new Error(`Unable to connect to MySQL database (${err.message})`);
-  });
-
-  console.log('Connected to MySQL');
-
-  // Get all existing articles from mysql database
-  const articles = await db.query('SELECT * FROM `articles`', {
-    type: db.QueryTypes.SELECT,
-  });
-
-  console.log('articles found: ', articles.length);
-
   // Get all articles views log
   const views = await ArticlesLog.find();
 
   console.log('views found: ', views.length);
 
-  const newArticlesHistory = articles.map((article) => {
-    const articleViews = views
-      .filter((doc) => doc.message === `Article ${article.id} was viewed`)
-      .map((doc) => doc.timestamp);
-    return {
-      articleId: article.id,
-      authorId: article.author_id,
-      viewedAt: articleViews,
-    };
+  const articles = new Set(views.map((doc) => doc.meta.articleId));
+
+  console.log('articles found: ', articles.size);
+
+  const newArticlesHistory = [];
+  articles.forEach((article) => {
+    const viewedAt = [];
+    let authorId;
+    views.forEach((doc) => {
+      if (doc.meta.articleId === article) {
+        viewedAt.push(doc.timestamp);
+        // if authorId has ever been changed we want to store the last one in articles_history
+        authorId = doc.meta.authorId;
+      }
+    });
+
+    newArticlesHistory.push({
+      articleId: article,
+      authorId,
+      viewedAt,
+    });
   });
 
   console.log('Saving new history...');
 
-  await ArticlesHistory.deleteMany({});
-  await ArticlesHistory.create(newArticlesHistory);
+  await ArticlesHistory.createCollection();
 
-  process.exit();
+  const session = await mongoose.startSession();
+  session.startTransaction({});
+  try {
+    await ArticlesHistory.deleteMany({}, { session });
+    await ArticlesHistory.create(newArticlesHistory, { session });
+    await session.commitTransaction();
+    session.endSession();
+    process.exit(0);
+  } catch (error) {
+    await session.abortTransaction();
+    session.endSession();
+    throw error;
+  }
 };
 
 updateHistory().catch((err) => {

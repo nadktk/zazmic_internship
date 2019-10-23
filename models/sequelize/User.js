@@ -2,7 +2,7 @@ const { Model, DataTypes } = require('sequelize');
 const path = require('path');
 
 const root = path.dirname(process.mainModule.filename);
-const sequelize = require(path.join(root, 'utils', 'database'));
+const sequelize = require(path.join(root, 'database', 'db-mysql.js'));
 const hashPassword = require(path.join(root, 'utils', 'hash-password'));
 
 class User extends Model {}

@@ -2,17 +2,17 @@ const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
 const path = require('path');
-const mongoose = require('mongoose');
 
 // logger
-const { infoLogger, errorLogger, queryLogger } = require(path.join(
+const { infoLogger, errorLogger } = require(path.join(
   __dirname,
   'logger',
   'logger.js',
 ));
 
 // import sequelize instance
-const db = require(path.join(__dirname, 'utils', 'database.js'));
+const dbMysql = require(path.join(__dirname, 'database', 'db-mysql.js'));
+const dbMongo = require(path.join(__dirname, 'database', 'db-mongo.js'));
 
 // import routers
 const blogRoutes = require(path.join(__dirname, 'routes', 'api', 'v1', 'blog'));
@@ -51,38 +51,15 @@ app.use((err, req, res, next) => {
   });
 });
 
-// set mongoose query logger
-mongoose.set('debug', (collectionName, method, query) => {
-  queryLogger.log({
-    label: 'mongodb',
-    level: 'info',
-    message: `Executed ${collectionName}.${method}: ${JSON.stringify(query)}`,
-  });
-});
-
 const port = process.env.PORT;
-const mongoUrl = process.env.MONGO_URL;
 
 // connect databases and start server
 const startServer = async () => {
-  await mongoose
-    .connect(mongoUrl, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-      replicaSet: 'mentorship-shard-0',
-    })
-    .catch((err) => {
-      throw new Error(`Unable to connect to MongoDB database (${err.message})`);
-    });
-
-  infoLogger.log({
-    label: 'mongodb',
-    level: 'info',
-    message: 'Connected to MongoDB',
+  await dbMongo.connect().catch((err) => {
+    throw new Error(`Unable to connect to MongoDB database (${err.message})`);
   });
 
-  await db.authenticate().catch((err) => {
+  await dbMysql.authenticate().catch((err) => {
     throw new Error(`Unable to connect to MySQL database (${err.message})`);
   });
 

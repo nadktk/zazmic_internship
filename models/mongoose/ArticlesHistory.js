@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const articlesHistorySchema = new Schema({
-  articleId: String,
-  authorId: String,
+  articleId: Number,
+  authorId: Number,
   viewedAt: [Date],
 });
 

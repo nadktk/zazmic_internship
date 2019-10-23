@@ -55,7 +55,7 @@ router.get(
 router.get(
   '/:id',
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: find article by id
     const articleById = await Article.findByPk(id, {
@@ -70,25 +70,30 @@ router.get(
     }
 
     // MongoDB operations: find article views doc and increment views count
-    const viewsDoc = await ArticlesView.findOne({ articleId: id });
-    const nextViews = viewsDoc ? viewsDoc.views + 1 : 1;
-    if (!viewsDoc) {
-      await ArticlesView.create({
-        articleId: id,
-        authorId: articleById.authorId,
-        views: nextViews,
-      });
-    } else {
-      await ArticlesView.updateOne({ articleId: id }, { views: nextViews });
-    }
+    const viewsDoc = await ArticlesView.findOneAndUpdate(
+      { articleId: id },
+      {
+        $set: {
+          authorId: articleById.authorId,
+        },
+        $inc: {
+          views: 1,
+        },
+      },
+      { upsert: true },
+    );
 
     // logging article history
     historyLogger.log({
       level: 'info',
       message: `Article ${id} was viewed`,
+      metadata: {
+        articleId: id,
+        authorId: articleById.authorId,
+      },
     });
 
-    articleById.views = nextViews;
+    articleById.views = viewsDoc ? viewsDoc.views + 1 : 1;
     res.json({ data: articleById });
   }),
 );
@@ -102,7 +107,7 @@ router.put(
   '/:id',
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: find article by id
     const article = await Article.findByPk(id);
@@ -110,7 +115,7 @@ router.put(
     await article.update(req.body);
 
     // MongoDB operations: update document if authorID changes
-    if (+req.body.authorId !== article.authorId) {
+    if (Number(req.body.authorId) !== article.authorId) {
       await ArticlesView.updateOne(
         { articleId: id },
         { authorId: article.authorId },
@@ -165,7 +170,7 @@ router.post(
 router.delete(
   '/:id',
   asyncHandler(async (req, res, next) => {
-    const { id } = req.params;
+    const id = Number(req.params.id);
 
     // MySQL operations: delete article record
     const destroyedRows = await Article.destroy({ where: { id } });

@@ -5,6 +5,10 @@ module.exports = mongoose.model(
   {
     message: String,
     timestamp: Date,
+    meta: {
+      authorId: Number,
+      articleId: Number,
+    },
   },
   'articles_logs',
 );
