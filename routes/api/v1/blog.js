@@ -38,7 +38,7 @@ router.get(
     // MongoDB operations: add views to all articles
     const allViews = await ArticlesView.find();
     articles = articles.map((article) => {
-      const av = allViews.find((doc) => +doc.articleId === article.id);
+      const av = allViews.find((doc) => doc.articleId === article.id);
       const views = av ? av.views : 0;
       return { ...article, views };
     });
