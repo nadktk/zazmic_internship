@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix .",
-    "dev": "env-cmd nodemon ."
+    "dev": "env-cmd nodemon .",
+    "history": "env-cmd node history.js"
   },
   "author": "nadktk",
   "license": "MIT",
@@ -34,7 +35,11 @@
     "env-cmd": "^10.0.1",
     "express": "^4.17.1",
     "express-async-handler": "^1.1.4",
+    "mongodb": "^3.3.2",
+    "mongoose": "^5.7.5",
     "mysql2": "^1.7.0",
-    "sequelize": "^5.19.5"
+    "sequelize": "^5.19.5",
+    "winston": "^3.2.1",
+    "winston-mongodb": "^5.0.0"
   }
 }

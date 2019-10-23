@@ -1,11 +1,18 @@
-/* eslint-disable no-console */
 const express = require('express');
 const https = require('https');
 const bodyParser = require('body-parser');
 const path = require('path');
 
+// logger
+const { infoLogger, errorLogger } = require(path.join(
+  __dirname,
+  'logger',
+  'logger.js',
+));
+
 // import sequelize instance
-const db = require(path.join(__dirname, 'utils', 'database.js'));
+const dbMysql = require(path.join(__dirname, 'database', 'db-mysql.js'));
+const dbMongo = require(path.join(__dirname, 'database', 'db-mongo.js'));
 
 // import routers
 const blogRoutes = require(path.join(__dirname, 'routes', 'api', 'v1', 'blog'));
@@ -33,19 +40,49 @@ app.get('*', (req, res) => {
 // errors handling
 app.use((err, req, res, next) => {
   if (res.statusCode === 200) res.status(500);
+  errorLogger.log({
+    level: 'error',
+    message: err.message,
+    metadata: `Request URL: ${req.url}`,
+    label: 'express',
+  });
   res.send({
     error: err.message,
   });
 });
 
-const port = process.env.PORT || 2632;
+const port = process.env.PORT;
 
-// database
-db.authenticate()
-  .then(() => {
-    console.log('Connected to DB');
-    app.listen(port, () => console.log(`Server is running on port ${port}`));
-  })
-  .catch((err) => {
-    console.error('Unable to connect to the database:', err);
+// connect databases and start server
+const startServer = async () => {
+  await dbMongo.connect().catch((err) => {
+    throw new Error(`Unable to connect to MongoDB database (${err.message})`);
   });
+
+  await dbMysql.authenticate().catch((err) => {
+    throw new Error(`Unable to connect to MySQL database (${err.message})`);
+  });
+
+  infoLogger.log({
+    label: 'mysql',
+    level: 'info',
+    message: 'Connected to MySQL',
+  });
+
+  await app.listen(port);
+
+  infoLogger.log({
+    label: 'server',
+    level: 'info',
+    message: `Server is running on port ${port}`,
+  });
+};
+
+startServer().catch((err) => {
+  errorLogger.log({
+    level: 'error',
+    message: err.message,
+    metadata: err.stack,
+  });
+  errorLogger.end(() => process.exit(1));
+});
