@@ -1,11 +1,8 @@
-/* eslint-disable-next-line arrow-body-style */
+/* eslint-disable arrow-body-style */
 const recordIsValid = (record) => {
-  return (
-    record.title && record.content && record.authorId && record.publishedAt
-  );
+  return record.title && record.content && record.publishedAt;
 };
 
-/* eslint-disable-next-line arrow-body-style */
 const userIsValid = (user) => {
   return (
     user.firstName
@@ -15,7 +12,12 @@ const userIsValid = (user) => {
   );
 };
 
+const userUpdateIsValid = (user) => {
+  return user.firstName && user.lastName;
+};
+
 module.exports = {
   recordIsValid,
   userIsValid,
+  userUpdateIsValid,
 };

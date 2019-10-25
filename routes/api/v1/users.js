@@ -3,16 +3,9 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
-const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
-const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User, Article } = require(path.join(root, 'models', 'sequelize'));
 const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
-
-const { USERID_ERR, USERDATA_ERR } = require(path.join(
-  root,
-  'utils',
-  'error-messages',
-));
+const { USERID_ERR } = require(path.join(root, 'utils', 'error-messages'));
 
 const router = express.Router();
 
@@ -78,88 +71,6 @@ router.get(
     }
 
     res.json({ data: userById });
-  }),
-);
-
-/**
- * @route   PUT api/v1/users/:id
- * @desc    Update a user by ID
- */
-
-router.put(
-  '/:id',
-  asyncHandler(async (req, res, next) => {
-    if (!userIsValid(req.body)) throw new Error(USERDATA_ERR);
-    const id = Number(req.params.id);
-
-    // MySQL operations: find user and update
-    const [updatedRows] = await User.update(req.body, {
-      where: { id },
-      individualHooks: true,
-    });
-    if (!updatedRows) throw new Error(USERID_ERR);
-    const updatedUser = await User.findByPk(id);
-
-    // logging success
-    infoLogger.log({
-      level: 'info',
-      message: `User ${id} was successfully updated`,
-    });
-
-    res.json({ data: updatedUser });
-  }),
-);
-
-/**
- * @route   POST api/v1/users
- * @desc    Add new user
- */
-
-router.post(
-  '/',
-  asyncHandler(async (req, res, next) => {
-    if (!userIsValid(req.body)) throw new Error(USERDATA_ERR);
-
-    // MySQL operations: create new user
-    const newUser = await User.create(req.body);
-
-    // logging success
-    infoLogger.log({
-      level: 'info',
-      message: `User ${newUser.id} was successfully created`,
-    });
-
-    delete newUser.password;
-    res.json({ data: newUser });
-  }),
-);
-
-/**
- * @route   DELETE api/v1/users/:id
- * @desc    Delete a user by ID
- */
-
-router.delete(
-  '/:id',
-  asyncHandler(async (req, res, next) => {
-    const id = Number(req.params.id);
-
-    // MySQL operations: delete user record
-    const destroyedRows = await User.destroy({ where: { id } });
-    if (!destroyedRows) throw new Error(USERID_ERR);
-
-    // MongoDB operations: delete docs from articlesviews collection
-    await ArticlesView.deleteMany({
-      authorId: id,
-    });
-
-    // logging success
-    infoLogger.log({
-      level: 'info',
-      message: `User ${id} was successfully deleted`,
-    });
-
-    res.send();
   }),
 );
 

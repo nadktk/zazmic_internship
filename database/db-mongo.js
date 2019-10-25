@@ -34,8 +34,8 @@ class Database {
     mongoose.connection.on('error', (err) => {
       errorLogger.log({
         level: 'error',
-        message: `Mongoose  error: ${err.message}`,
-        metadata: err.stack,
+        message: `Mongoose error: ${err.message}`,
+        metadata: err,
       });
     });
 
