@@ -23,7 +23,7 @@ const dbMysql = require(path.join(__dirname, 'database', 'db-mysql.js'));
 const dbMongo = require(path.join(__dirname, 'database', 'db-mongo.js'));
 
 // Redis client
-const redisClient = new Redis();
+const redisClient = new Redis(process.env.REDIS_URL);
 redisClient.on('error', (err) => {
   errorLogger.log({
     level: 'error',
