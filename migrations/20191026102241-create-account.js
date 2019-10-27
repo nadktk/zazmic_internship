@@ -1,7 +1,7 @@
 module.exports = {
   up: (queryInterface, Sequelize) =>
     /* eslint-disable-next-line implicit-arrow-linebreak */
-    queryInterface.createTable('articles', {
+    queryInterface.createTable('accounts', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,15 +9,15 @@ module.exports = {
         unique: true,
         type: Sequelize.INTEGER,
       },
-      title: {
+      provider: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      content: {
-        type: Sequelize.TEXT,
+      provider_user_id: {
+        type: Sequelize.STRING,
         allowNull: false,
       },
-      author_id: {
+      user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
         references: {
@@ -26,10 +26,6 @@ module.exports = {
         },
         onUpdate: 'CASCADE',
         onDelete: 'CASCADE',
-      },
-      published_at: {
-        type: Sequelize.DATE,
-        allowNull: false,
       },
       created_at: {
         allowNull: false,
@@ -40,5 +36,5 @@ module.exports = {
         type: Sequelize.DATE,
       },
     }),
-  down: (queryInterface) => queryInterface.dropTable('articles'),
+  down: (queryInterface) => queryInterface.dropTable('accounts'),
 };

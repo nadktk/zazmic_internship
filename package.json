@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "eslint --fix .",
     "dev": "env-cmd nodemon .",
-    "history": "env-cmd node history.js"
+    "history": "env-cmd node history.js",
+    "mysql-migrate": "env-cmd npx sequelize-cli db:migrate"
   },
   "author": "nadktk",
   "license": "MIT",
@@ -42,6 +43,8 @@
     "mongoose": "^5.7.5",
     "mysql2": "^1.7.0",
     "passport": "^0.4.0",
+    "passport-facebook": "^3.0.0",
+    "passport-google-oauth20": "^2.0.0",
     "passport-local": "^1.0.0",
     "sequelize": "^5.19.5",
     "winston": "^3.2.1",

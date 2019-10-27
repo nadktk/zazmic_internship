@@ -12,10 +12,12 @@ User.init(
     firstName: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: '',
     },
     lastName: {
       type: DataTypes.STRING,
       allowNull: false,
+      defaultValue: '',
     },
     email: {
       type: DataTypes.STRING,
@@ -44,6 +46,10 @@ User.associate = (models) => {
   User.hasMany(models.Article, {
     as: 'article',
     foreignKey: 'authorId',
+  });
+  User.hasMany(models.Account, {
+    as: 'connection',
+    foreignKey: 'userId',
   });
 };
 
