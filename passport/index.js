@@ -18,7 +18,6 @@ exports.passportInit = (passport) => {
     try {
       const userById = await User.findOne({
         where: { id },
-        raw: true,
       });
       if (userById) done(null, userById);
       else throw new Error('User not found');

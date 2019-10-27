@@ -5,6 +5,7 @@ const passport = require('passport');
 
 const root = path.dirname(process.mainModule.filename);
 
+const authService = require(path.join(root, 'services', 'authService.js'));
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User } = require(path.join(root, 'models', 'sequelize'));
@@ -47,7 +48,7 @@ router.post(
  * @desc    User login route
  */
 
-router.post('/login', passport.authenticate('local'), (req, res, next) => {
+router.post('/login', passport.authenticate('local'), (req, res) => {
   res.json({ data: req.user });
 });
 
@@ -56,15 +57,6 @@ router.post('/login', passport.authenticate('local'), (req, res, next) => {
  * @desc    Destroys user's session
  */
 
-router.post('/logout', (req, res, next) => {
-  req.logout();
-  req.session.destroy((err) => {
-    if (err) next(err);
-    else {
-      res.clearCookie('sid');
-      res.send();
-    }
-  });
-});
+router.post('/logout', authService.logout);
 
 module.exports = router;

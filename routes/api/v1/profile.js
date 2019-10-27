@@ -3,6 +3,7 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
+const authService = require(path.join(root, 'services', 'authService.js'));
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { isLoggedIn } = require(path.join(root, 'passport'));
 const { User } = require(path.join(root, 'models', 'sequelize'));
@@ -13,11 +14,7 @@ const { userUpdateIsValid } = require(path.join(
   'utils',
   'validation.js',
 ));
-const { USERID_ERR, USERDATA_ERR } = require(path.join(
-  root,
-  'utils',
-  'error-messages',
-));
+const { USERDATA_ERR } = require(path.join(root, 'utils', 'error-messages'));
 
 const router = express.Router();
 
@@ -32,14 +29,13 @@ router.put(
   asyncHandler(async (req, res, next) => {
     if (!userUpdateIsValid(req.body)) throw new Error(USERDATA_ERR);
     const { id } = req.user;
+    const userData = {
+      firstName: req.body.firstName,
+      lastName: req.body.lastName,
+    };
 
     // MySQL operations: find user and update
-    const [updatedRows] = await User.update(req.body, {
-      where: { id },
-      individualHooks: true,
-    });
-    if (!updatedRows) throw new Error(USERID_ERR);
-    const updatedUser = await User.findByPk(id);
+    const updated = await req.user.update(userData);
 
     // logging success
     infoLogger.log({
@@ -47,7 +43,7 @@ router.put(
       message: `User ${id} was successfully updated`,
     });
 
-    res.json({ data: updatedUser });
+    res.json({ data: req.user });
   }),
 );
 
@@ -63,8 +59,7 @@ router.delete(
     const { id } = req.user;
 
     // MySQL operations: delete user record
-    const destroyedRows = await User.destroy({ where: { id } });
-    if (!destroyedRows) throw new Error(USERID_ERR);
+    const destroyed = await req.user.destroy();
 
     // MongoDB operations: delete docs from articlesviews collection
     await ArticlesView.deleteMany({
@@ -77,14 +72,7 @@ router.delete(
       message: `User ${id} was successfully deleted`,
     });
 
-    req.logout();
-    req.session.destroy((err) => {
-      if (err) next(err);
-      else {
-        res.clearCookie('sid');
-        res.send();
-      }
-    });
+    await authService.logout(req, res, next);
   }),
 );
 
