@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const asyncHandler = require('express-async-handler');
 const passport = require('passport');
+const jwt = require('jsonwebtoken');
 
 const root = path.dirname(process.mainModule.filename);
 
@@ -65,5 +66,43 @@ router.post(
  */
 
 router.post('/logout', authService.logout);
+
+/**
+ * Routes for JWT
+ */
+
+/**
+ * @route   POST api/v1/jwtsend
+ * @desc    Generates and sends JWT token with userName from payload
+ */
+
+router.post('/jwtsend', (req, res, next) => {
+  const payload = {
+    userName: req.query.userName,
+  };
+  // sign token
+  jwt.sign(payload, process.env.SECRET, { expiresIn: 60 }, (err, token) => {
+    if (err) next(err);
+    else {
+      res.json({
+        data: { token },
+      });
+    }
+  });
+});
+
+/**
+ * @route   GET api/v1/jwtcheck
+ * @desc    Checks JWT token from query params
+ */
+
+router.get('/jwtcheck', (req, res, next) => {
+  jwt.verify(req.query.token, process.env.SECRET, (err, decoded) => {
+    if (err) next(err);
+    else {
+      res.json({ data: decoded });
+    }
+  });
+});
 
 module.exports = router;
