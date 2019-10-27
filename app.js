@@ -3,7 +3,6 @@ const express = require('express');
 const session = require('express-session');
 const https = require('https');
 const bodyParser = require('body-parser');
-const Redis = require('ioredis');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 
@@ -21,16 +20,11 @@ const { infoLogger, errorLogger } = require(path.join(
 //  databases
 const dbMysql = require(path.join(__dirname, 'database', 'db-mysql.js'));
 const dbMongo = require(path.join(__dirname, 'database', 'db-mongo.js'));
-
-// Redis client
-const redisClient = new Redis(/* process.env.REDIS_URL */);
-redisClient.on('error', (err) => {
-  errorLogger.log({
-    level: 'error',
-    message: `Redis error: ${err.message}`,
-    metadata: err,
-  });
-});
+const redisClient = require(path.join(
+  __dirname,
+  'database',
+  'redis-client.js',
+));
 
 const app = express();
 
@@ -41,7 +35,7 @@ app.use(bodyParser.json());
 // session
 app.use(
   session({
-    store: new RedisStore({ client: redisClient, prefix: 'nadia:' }),
+    store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
     saveUninitialized: false,
     resave: false,
     secret: process.env.SECRET,
