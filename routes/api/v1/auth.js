@@ -5,6 +5,8 @@ const passport = require('passport');
 
 const root = path.dirname(process.mainModule.filename);
 
+const { loginLimiter } = require(path.join(root, 'limiter', 'limiter.js'));
+
 const authService = require(path.join(root, 'services', 'authService.js'));
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
@@ -48,9 +50,14 @@ router.post(
  * @desc    User login route
  */
 
-router.post('/login', passport.authenticate('local'), (req, res) => {
-  res.json({ data: req.user });
-});
+router.post(
+  '/login',
+  loginLimiter,
+  passport.authenticate('local'),
+  (req, res) => {
+    res.json({ data: req.user });
+  },
+);
 
 /**
  * @route   POST api/v1/logout
