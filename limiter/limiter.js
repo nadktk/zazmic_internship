@@ -7,7 +7,7 @@ const root = path.dirname(process.mainModule.filename);
 const redisClient = require(path.join(root, 'database', 'redis-client.js'));
 
 const apiLimiterStore = new RedisStore({
-  prefix: 'nadia:rl:api_limiter',
+  prefix: 'nadia:rl:api_limiter:',
   client: redisClient,
 });
 
@@ -19,7 +19,7 @@ const apiLimiter = rateLimit({
 });
 
 const loginLimiterStore = new RedisStore({
-  prefix: 'nadia:rl:login_limiter',
+  prefix: 'nadia:rl:login_limiter:',
   client: redisClient,
 });
 
