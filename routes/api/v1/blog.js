@@ -3,15 +3,16 @@ const path = require('path');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
+const { isLoggedIn } = require(path.join(root, 'passport'));
+const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
+const { User, Article } = require(path.join(root, 'models', 'sequelize'));
+const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 const { infoLogger, historyLogger } = require(path.join(
   root,
   'logger',
   'logger.js',
 ));
-const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
-const { User, Article } = require(path.join(root, 'models', 'sequelize'));
-const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
-const { BLOGID_ERR, BLOGDATA_ERR } = require(path.join(
+const { BLOGID_ERR, BLOGDATA_ERR, PERMISSION_ERR } = require(path.join(
   root,
   'utils',
   'error-messages',
@@ -105,13 +106,15 @@ router.get(
 
 router.put(
   '/:id',
+  isLoggedIn,
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
     const id = Number(req.params.id);
 
-    // MySQL operations: find article by id
+    // MySQL operations: find article by id and update it
     const article = await Article.findByPk(id);
     if (!article) throw new Error(BLOGID_ERR);
+    if (article.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
     await article.update(req.body);
 
     // MongoDB operations: update document if authorID changes
@@ -139,11 +142,15 @@ router.put(
 
 router.post(
   '/',
+  isLoggedIn,
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
 
+    let newArticle = req.body;
+    newArticle.authorId = req.user.id;
+
     // MySQL operations: create new article
-    const newArticle = await Article.create(req.body);
+    newArticle = await Article.create(newArticle);
 
     // MongoDB operations: add doc to article views collection
     await ArticlesView.create({
@@ -169,12 +176,15 @@ router.post(
 
 router.delete(
   '/:id',
+  isLoggedIn,
   asyncHandler(async (req, res, next) => {
     const id = Number(req.params.id);
 
     // MySQL operations: delete article record
-    const destroyedRows = await Article.destroy({ where: { id } });
-    if (!destroyedRows) throw new Error(BLOGID_ERR);
+    const articleToDestroy = await Article.findByPk(id);
+    if (!articleToDestroy) throw new Error(BLOGID_ERR);
+    if (articleToDestroy.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
+    await articleToDestroy.destroy();
 
     // MongoDB operations: delete doc from articlesviews collection
     await ArticlesView.deleteOne({
