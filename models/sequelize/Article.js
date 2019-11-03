@@ -16,6 +16,9 @@ Article.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    picture: {
+      type: DataTypes.TEXT,
+    },
     authorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
