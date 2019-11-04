@@ -2,3 +2,5 @@
 .env
 ecosystem.config.js
 logs/
+uploads/
+gcs/zazmic-blog-storage.json

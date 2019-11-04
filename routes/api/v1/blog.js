@@ -5,18 +5,54 @@ const asyncHandler = require('express-async-handler');
 const root = path.dirname(process.mainModule.filename);
 const { isLoggedIn } = require(path.join(root, 'passport'));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
+
+// multer & GCS
+const multer = require('multer');
+
+const multerGCStorage = require(path.join(root, 'gcs', 'multer-gcs.js'));
+const { deleteFile } = require(path.join(root, 'services', 'gcs-service.js'));
+
+const storage = multerGCStorage({
+  prefix: 'nadiia/articles',
+  size: {
+    width: 1200,
+    height: 680,
+  },
+});
+
+const upload = multer({
+  storage,
+  limits: {
+    fileSize: 1000 * 1000 * 5,
+  },
+});
+
+// models
 const { User, Article } = require(path.join(root, 'models', 'sequelize'));
 const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
+
+// loggers
 const { infoLogger, historyLogger } = require(path.join(
   root,
   'logger',
   'logger.js',
 ));
+
+// errors messages
 const { BLOGID_ERR, BLOGDATA_ERR, PERMISSION_ERR } = require(path.join(
   root,
   'utils',
   'error-messages',
 ));
+
+// extract Article data from request
+const extractData = (req) => ({
+  title: req.body.title,
+  content: req.body.content,
+  publishedAt: req.body.publishedAt,
+  picture: req.file ? req.file.url : null,
+  authorId: req.user.id,
+});
 
 const router = express.Router();
 
@@ -31,7 +67,7 @@ router.get(
     // MySQL operations: find all articles
     let articles = await Article.findAll({
       include: [{ model: User, as: 'author' }],
-      order: [['id', 'DESC']],
+      order: [['publishedAt', 'DESC']],
       raw: true,
       nest: true,
     });
@@ -107,22 +143,25 @@ router.get(
 router.put(
   '/:id',
   isLoggedIn,
+  upload.single('picture'),
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
     const id = Number(req.params.id);
 
+    const newArticleData = extractData(req);
+
     // MySQL operations: find article by id and update it
     const article = await Article.findByPk(id);
     if (!article) throw new Error(BLOGID_ERR);
-    if (article.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
-    await article.update(req.body);
 
-    // MongoDB operations: update document if authorID changes
-    if (Number(req.body.authorId) !== article.authorId) {
-      await ArticlesView.updateOne(
-        { articleId: id },
-        { authorId: article.authorId },
-      );
+    const oldArticlePicture = article.picture;
+
+    if (article.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
+    await article.update(newArticleData);
+
+    // delete old article picture
+    if (oldArticlePicture && oldArticlePicture !== article.picture) {
+      await deleteFile(oldArticlePicture);
     }
 
     // logging success
@@ -143,14 +182,14 @@ router.put(
 router.post(
   '/',
   isLoggedIn,
+  upload.single('picture'),
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
 
-    let newArticle = req.body;
-    newArticle.authorId = req.user.id;
+    const newArticleData = extractData(req);
 
     // MySQL operations: create new article
-    newArticle = await Article.create(newArticle);
+    const newArticle = await Article.create(newArticleData);
 
     // MongoDB operations: add doc to article views collection
     await ArticlesView.create({
@@ -184,7 +223,14 @@ router.delete(
     const articleToDestroy = await Article.findByPk(id);
     if (!articleToDestroy) throw new Error(BLOGID_ERR);
     if (articleToDestroy.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
+
+    const articlePicture = articleToDestroy.picture;
     await articleToDestroy.destroy();
+
+    // delete article picture
+    if (articlePicture) {
+      await deleteFile(articlePicture);
+    }
 
     // MongoDB operations: delete doc from articlesviews collection
     await ArticlesView.deleteOne({

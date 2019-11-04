@@ -8,7 +8,7 @@ const root = path.dirname(process.mainModule.filename);
 
 const { loginLimiter } = require(path.join(root, 'limiter', 'limiter.js'));
 
-const authService = require(path.join(root, 'services', 'authService.js'));
+const authService = require(path.join(root, 'services', 'auth-service.js'));
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { userIsValid } = require(path.join(root, 'utils', 'validation.js'));
 const { User } = require(path.join(root, 'models', 'sequelize'));
