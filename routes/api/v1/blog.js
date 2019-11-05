@@ -16,7 +16,7 @@ const storage = multerGCStorage({
   prefix: 'nadiia/articles',
   size: {
     width: 1200,
-    height: 680,
+    height: 630,
   },
 });
 
@@ -222,7 +222,7 @@ router.delete(
     // MySQL operations: delete article record
     const articleToDestroy = await Article.findByPk(id);
     if (!articleToDestroy) throw new Error(BLOGID_ERR);
-    if (articleToDestroy.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
+    if (articleToDestroy.authorId !== req.user.id) { throw new Error(PERMISSION_ERR); }
 
     const articlePicture = articleToDestroy.picture;
     await articleToDestroy.destroy();

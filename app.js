@@ -5,6 +5,7 @@ const https = require('https');
 const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
+const csrf = require('csurf');
 
 const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
 
@@ -47,6 +48,13 @@ app.use(
     },
   }),
 );
+
+// CSRF
+app.use(csrf());
+app.all('*', (req, res, next) => {
+  res.cookie('XSRF-TOKEN', req.csrfToken());
+  next();
+});
 
 // passport
 app.use(passport.initialize());
