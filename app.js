@@ -7,6 +7,11 @@ const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const csrf = require('csurf');
 
+// socket.io packages
+const socketio = require('socket.io');
+const passportSocketIo = require('passport.socketio');
+const adapter = require('socket.io-redis');
+
 const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
 
 const { passportInit } = require(path.join(__dirname, 'passport'));
@@ -36,18 +41,17 @@ app.use(bodyParser.json());
 app.set('trust proxy', 1);
 
 // session
-app.use(
-  session({
-    store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
-    saveUninitialized: false,
-    resave: false,
-    secret: process.env.SECRET,
-    name: 'sid',
-    cookie: {
-      maxAge: 48 * 3600 * 1000,
-    },
-  }),
-);
+const sessionConfig = {
+  store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
+  saveUninitialized: false,
+  resave: false,
+  secret: process.env.SECRET,
+  name: 'sid',
+  cookie: {
+    maxAge: 48 * 3600 * 1000,
+  },
+};
+app.use(session(sessionConfig));
 
 // CSRF
 app.use(csrf());
@@ -67,6 +71,12 @@ app.get('*', (req, res) => {
 });
 
 passportInit(passport);
+
+// socket.io
+const http = require('http');
+
+const server = http.createServer(app);
+const io = socketio(server);
 
 // errors handling
 app.use((err, req, res, next) => {
