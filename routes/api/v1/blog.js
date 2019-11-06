@@ -28,7 +28,11 @@ const upload = multer({
 });
 
 // models
-const { User, Article } = require(path.join(root, 'models', 'sequelize'));
+const { User, Article, Comment } = require(path.join(
+  root,
+  'models',
+  'sequelize',
+));
 const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 
 // loggers
@@ -136,6 +140,31 @@ router.get(
 );
 
 /**
+ * @route   GET api/v1/blog/:id/comments
+ * @desc    Get a record by its ID
+ */
+
+router.get(
+  '/:id/comments',
+  asyncHandler(async (req, res, next) => {
+    const id = Number(req.params.id);
+
+    // MySQL operations: find comments by article id
+    const comByArticleId = await Comment.findAll({
+      where: {
+        articleId: id,
+      },
+      raw: true,
+    });
+
+    // TEMP logging
+    console.log('comments', comByArticleId);
+
+    res.json({ data: comByArticleId });
+  }),
+);
+
+/**
  * @route   PUT api/v1/blog/:id
  * @desc    Update a record by its ID
  */
@@ -222,7 +251,9 @@ router.delete(
     // MySQL operations: delete article record
     const articleToDestroy = await Article.findByPk(id);
     if (!articleToDestroy) throw new Error(BLOGID_ERR);
-    if (articleToDestroy.authorId !== req.user.id) { throw new Error(PERMISSION_ERR); }
+    if (articleToDestroy.authorId !== req.user.id) {
+      throw new Error(PERMISSION_ERR);
+    }
 
     const articlePicture = articleToDestroy.picture;
     await articleToDestroy.destroy();

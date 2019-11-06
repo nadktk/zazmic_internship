@@ -36,6 +36,10 @@ Article.init(
 
 Article.associate = (models) => {
   Article.belongsTo(models.User, { as: 'author' });
+  Article.hasMany(models.Comment, {
+    as: 'comment',
+    foreignKey: 'articleId',
+  });
 };
 
 module.exports = Article;

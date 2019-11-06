@@ -8,7 +8,8 @@
     "lint": "eslint --fix .",
     "dev": "env-cmd nodemon .",
     "history": "env-cmd node history.js",
-    "mysql-migrate": "env-cmd npx sequelize-cli db:migrate"
+    "mysql-migrate": "env-cmd npx sequelize-cli db:migrate",
+    "undo-migrate": "env-cmd npx sequelize-cli db:migrate:undo"
   },
   "author": "nadktk",
   "license": "MIT",
