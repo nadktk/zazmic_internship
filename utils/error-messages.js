@@ -5,5 +5,6 @@ module.exports = {
   USERDATA_ERR: 'Wrong user data',
   BLOGID_ERR: 'Wrong record ID',
   BLOGDATA_ERR: 'Wrong record data',
+  COMMENTID_ERR: 'Wrong comment ID',
   PERMISSION_ERR: 'You are not allowed to perform this action',
 };

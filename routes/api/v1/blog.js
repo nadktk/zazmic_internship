@@ -1,14 +1,18 @@
 const express = require('express');
 const path = require('path');
+const multer = require('multer');
 const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
 const { isLoggedIn } = require(path.join(root, 'passport'));
 const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
+const addPaginationOpts = require(path.join(
+  root,
+  'utils',
+  'add-pagination-opts',
+));
 
 // multer & GCS
-const multer = require('multer');
-
 const multerGCStorage = require(path.join(root, 'gcs', 'multer-gcs.js'));
 const { deleteFile } = require(path.join(root, 'services', 'gcs-service.js'));
 
@@ -28,11 +32,7 @@ const upload = multer({
 });
 
 // models
-const { User, Article, Comment } = require(path.join(
-  root,
-  'models',
-  'sequelize',
-));
+const { User, Article } = require(path.join(root, 'models', 'sequelize'));
 const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 
 // loggers
@@ -68,22 +68,32 @@ const router = express.Router();
 router.get(
   '/',
   asyncHandler(async (req, res, next) => {
-    // MySQL operations: find all articles
-    let articles = await Article.findAll({
+    const { after } = req.query;
+
+    // define query options
+    const opts = {
       include: [{ model: User, as: 'author' }],
-      order: [['publishedAt', 'DESC']],
+      order: [['publishedAt', 'DESC'], ['id', 'DESC']],
+      limit: 5,
       raw: true,
       nest: true,
-    });
+    };
+
+    if (after) addPaginationOpts(opts, after);
+
+    // MySQL operations: find all articles
+    let articles = await Article.findAll(opts);
 
     // MongoDB operations: add views to all articles
     const allViews = await ArticlesView.find();
+
     articles = articles.map((article) => {
       const av = allViews.find((doc) => doc.articleId === article.id);
       const views = av ? av.views : 0;
       return { ...article, views };
     });
 
+    // send response
     res.json({ data: articles });
   }),
 );
@@ -140,31 +150,6 @@ router.get(
 );
 
 /**
- * @route   GET api/v1/blog/:id/comments
- * @desc    Get a record by its ID
- */
-
-router.get(
-  '/:id/comments',
-  asyncHandler(async (req, res, next) => {
-    const id = Number(req.params.id);
-
-    // MySQL operations: find comments by article id
-    const comByArticleId = await Comment.findAll({
-      where: {
-        articleId: id,
-      },
-      raw: true,
-    });
-
-    // TEMP logging
-    console.log('comments', comByArticleId);
-
-    res.json({ data: comByArticleId });
-  }),
-);
-
-/**
  * @route   PUT api/v1/blog/:id
  * @desc    Update a record by its ID
  */
@@ -177,6 +162,7 @@ router.put(
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
     const id = Number(req.params.id);
 
+    // extract article data from request
     const newArticleData = extractData(req);
 
     // MySQL operations: find article by id and update it
@@ -185,6 +171,7 @@ router.put(
 
     const oldArticlePicture = article.picture;
 
+    // check permissions
     if (article.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
     await article.update(newArticleData);
 
@@ -199,6 +186,7 @@ router.put(
       message: `Article ${id} was successfully updated`,
     });
 
+    // send response
     res.json({ data: article });
   }),
 );
@@ -215,6 +203,7 @@ router.post(
   asyncHandler(async (req, res, next) => {
     if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
 
+    // extract article data from request
     const newArticleData = extractData(req);
 
     // MySQL operations: create new article
@@ -233,6 +222,7 @@ router.post(
       message: `Article ${newArticle.id} was successfully created`,
     });
 
+    // send response
     res.json({ data: newArticle });
   }),
 );
@@ -251,6 +241,8 @@ router.delete(
     // MySQL operations: delete article record
     const articleToDestroy = await Article.findByPk(id);
     if (!articleToDestroy) throw new Error(BLOGID_ERR);
+
+    // check permissions
     if (articleToDestroy.authorId !== req.user.id) {
       throw new Error(PERMISSION_ERR);
     }
@@ -274,6 +266,7 @@ router.delete(
       message: `Article ${id} was successfully deleted`,
     });
 
+    // send response
     res.send();
   }),
 );
