@@ -54,7 +54,6 @@ const extractData = (req) => ({
   title: req.body.title,
   content: req.body.content,
   publishedAt: req.body.publishedAt,
-  picture: req.file ? req.file.url : null,
   authorId: req.user.id,
 });
 
@@ -164,6 +163,7 @@ router.put(
 
     // extract article data from request
     const newArticleData = extractData(req);
+    if (req.file) newArticleData.picture = req.file.url;
 
     // MySQL operations: find article by id and update it
     const article = await Article.findByPk(id);
@@ -204,6 +204,7 @@ router.post(
   asyncHandler(async (req, res, next) => {
     // extract article data from request
     const newArticleData = extractData(req);
+    newArticleData.picture = req.file ? req.file.url : null;
 
     // MySQL operations: create new article
     const newArticle = await Article.create(newArticleData);
