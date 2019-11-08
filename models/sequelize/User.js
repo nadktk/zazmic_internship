@@ -47,15 +47,15 @@ User.init(
 
 User.associate = (models) => {
   User.hasMany(models.Article, {
-    as: 'article',
+    as: 'articles',
     foreignKey: 'authorId',
   });
   User.hasMany(models.Account, {
-    as: 'connection',
+    as: 'connections',
     foreignKey: 'userId',
   });
   User.hasMany(models.Comment, {
-    as: 'comment',
+    as: 'comments',
     foreignKey: 'authorId',
   });
 };

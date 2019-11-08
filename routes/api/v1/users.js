@@ -35,7 +35,7 @@ router.get(
       include: [
         {
           model: Article,
-          as: 'article',
+          as: 'articles',
           attributes: [],
         },
       ],
