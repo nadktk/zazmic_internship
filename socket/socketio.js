@@ -10,7 +10,7 @@ const { infoLogger, errorLogger } = require(path.join(
 ));
 
 module.exports = (io, sessionConfig) => {
-  io.adapter(redisAdapter('redis://:pwd@localhost:6379'));
+  io.adapter(redisAdapter(process.env.REDIS_URL));
 
   // get user information from a socket.io connection
   io.use(
