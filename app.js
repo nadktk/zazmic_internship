@@ -6,11 +6,10 @@ const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const csrf = require('csurf');
-
-// socket.io packages
 const socketio = require('socket.io');
-const passportSocketIo = require('passport.socketio');
-const adapter = require('socket.io-redis');
+const http = require('http');
+
+const socketioInit = require(path.join(__dirname, 'socket', 'socketio'));
 
 const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
 
@@ -72,11 +71,12 @@ app.get('*', (req, res) => {
 
 passportInit(passport);
 
-// socket.io
-const http = require('http');
-
+// socketio
 const server = http.createServer(app);
 const io = socketio(server);
+
+socketioInit(io, sessionConfig);
+app.locals.io = io;
 
 // errors handling
 app.use((err, req, res, next) => {
@@ -111,7 +111,7 @@ const startServer = async () => {
     message: 'Connected to MySQL',
   });
 
-  app.listen(port, () => {
+  server.listen(port, () => {
     infoLogger.log({
       label: 'server',
       level: 'info',

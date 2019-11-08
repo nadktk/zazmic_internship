@@ -12,6 +12,8 @@ const { User, Comment } = require(path.join(root, 'models', 'sequelize'));
 // loggers
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 
+const { commentValidation } = require(path.join(root, 'validation'));
+
 // errors messages
 const { COMMENTID_ERR, PERMISSION_ERR } = require(path.join(
   root,
@@ -58,6 +60,7 @@ router.get(
 
 router.post(
   '/:articleId/comments',
+  commentValidation,
   isLoggedIn,
   asyncHandler(async (req, res, next) => {
     const articleId = Number(req.params.articleId);
@@ -81,6 +84,13 @@ router.post(
     // add author object to response data
     newComment = newComment.get({ plain: true });
     newComment.author = req.user;
+
+    // emit socketio event
+    const { io } = req.app.locals;
+    io.to(`room_${articleId}`).emit('comment', {
+      action: 'create',
+      data: { comment: newComment },
+    });
 
     // send response
     res.json({ data: newComment });
@@ -107,6 +117,13 @@ router.delete(
     if (commentToDestroy.authorId !== req.user.id) {
       throw new Error(PERMISSION_ERR);
     }
+
+    // emit socketio event
+    const { io } = req.app.locals;
+    io.to(`room_${articleId}`).emit('comment', {
+      action: 'destroy',
+      data: { comment: commentToDestroy },
+    });
     await commentToDestroy.destroy();
 
     // log success

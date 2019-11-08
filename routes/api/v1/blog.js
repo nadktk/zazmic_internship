@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 
 const root = path.dirname(process.mainModule.filename);
 const { isLoggedIn } = require(path.join(root, 'passport'));
-const { recordIsValid } = require(path.join(root, 'utils', 'validation.js'));
+const { articleValidation } = require(path.join(root, 'validation'));
 const addPaginationOpts = require(path.join(
   root,
   'utils',
@@ -43,7 +43,7 @@ const { infoLogger, historyLogger } = require(path.join(
 ));
 
 // errors messages
-const { BLOGID_ERR, BLOGDATA_ERR, PERMISSION_ERR } = require(path.join(
+const { BLOGID_ERR, PERMISSION_ERR } = require(path.join(
   root,
   'utils',
   'error-messages',
@@ -158,8 +158,8 @@ router.put(
   '/:id',
   isLoggedIn,
   upload.single('picture'),
+  articleValidation,
   asyncHandler(async (req, res, next) => {
-    if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
     const id = Number(req.params.id);
 
     // extract article data from request
@@ -200,9 +200,8 @@ router.post(
   '/',
   isLoggedIn,
   upload.single('picture'),
+  articleValidation,
   asyncHandler(async (req, res, next) => {
-    if (!recordIsValid(req.body)) throw new Error(BLOGDATA_ERR);
-
     // extract article data from request
     const newArticleData = extractData(req);
 
