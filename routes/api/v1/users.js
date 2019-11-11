@@ -99,7 +99,7 @@ router.get(
     const opts = {
       where: { authorId: id },
       include: [{ model: User, as: 'author' }],
-      order: [['id', 'DESC']],
+      order: [['publishedAt', 'DESC'], ['id', 'DESC']],
       limit: 5,
       raw: true,
       nest: true,
