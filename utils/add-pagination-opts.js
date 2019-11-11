@@ -4,6 +4,7 @@ const { Op } = require('sequelize');
 module.exports = (opts, after) => {
   const [publAt, id] = after.split('_');
   opts.where = {
+    ...opts.where,
     [Op.or]: [
       {
         publishedAt: {
