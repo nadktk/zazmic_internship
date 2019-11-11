@@ -6,6 +6,10 @@ const bodyParser = require('body-parser');
 const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const csrf = require('csurf');
+const socketio = require('socket.io');
+const http = require('http');
+
+const socketioInit = require(path.join(__dirname, 'socket', 'socketio'));
 
 const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
 
@@ -36,18 +40,17 @@ app.use(bodyParser.json());
 app.set('trust proxy', 1);
 
 // session
-app.use(
-  session({
-    store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
-    saveUninitialized: false,
-    resave: false,
-    secret: process.env.SECRET,
-    name: 'sid',
-    cookie: {
-      maxAge: 48 * 3600 * 1000,
-    },
-  }),
-);
+const sessionConfig = {
+  store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
+  saveUninitialized: false,
+  resave: false,
+  secret: process.env.SECRET,
+  name: 'sid',
+  cookie: {
+    maxAge: 48 * 3600 * 1000,
+  },
+};
+app.use(session(sessionConfig));
 
 // CSRF
 app.use(csrf());
@@ -67,6 +70,13 @@ app.get('*', (req, res) => {
 });
 
 passportInit(passport);
+
+// socketio
+const server = http.createServer(app);
+const io = socketio(server);
+
+socketioInit(io, sessionConfig);
+app.locals.io = io;
 
 // errors handling
 app.use((err, req, res, next) => {
@@ -101,7 +111,7 @@ const startServer = async () => {
     message: 'Connected to MySQL',
   });
 
-  app.listen(port, () => {
+  server.listen(port, () => {
     infoLogger.log({
       label: 'server',
       level: 'info',

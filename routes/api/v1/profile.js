@@ -6,11 +6,7 @@ const { Op } = require('sequelize');
 const root = path.dirname(process.mainModule.filename);
 const authService = require(path.join(root, 'services', 'auth-service.js'));
 const { isLoggedIn } = require(path.join(root, 'passport'));
-const { userUpdateIsValid } = require(path.join(
-  root,
-  'utils',
-  'validation.js',
-));
+const { editProfileValidation } = require(path.join(root, 'validation'));
 
 // multer & GCS
 const multer = require('multer');
@@ -40,9 +36,6 @@ const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 // logger
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 
-// errors messages
-const { USERDATA_ERR } = require(path.join(root, 'utils', 'error-messages'));
-
 const router = express.Router();
 
 /**
@@ -52,17 +45,18 @@ const router = express.Router();
 
 router.put(
   '/',
+  editProfileValidation,
   isLoggedIn,
   asyncHandler(async (req, res, next) => {
-    if (!userUpdateIsValid(req.body)) throw new Error(USERDATA_ERR);
     const { id } = req.user;
+
     const userData = {
       firstName: req.body.firstName,
       lastName: req.body.lastName,
     };
 
     // MySQL operations: find user and update
-    const updated = await req.user.update(userData);
+    await req.user.update(userData);
 
     // logging success
     infoLogger.log({
