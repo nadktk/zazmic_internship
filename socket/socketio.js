@@ -20,8 +20,8 @@ const client = require(path.join(
 const rateLimiter = new RateLimiterRedis({
   redis: client,
   keyPrefix: 'nadia:socket:rl',
-  points: 3,
-  duration: 10, // 10 sec to check redis records
+  points: 10,
+  duration: 1,
 });
 
 module.exports = (io, sessionConfig) => {
