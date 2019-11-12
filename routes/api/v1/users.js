@@ -6,6 +6,11 @@ const root = path.dirname(process.mainModule.filename);
 const { User, Article } = require(path.join(root, 'models', 'sequelize'));
 const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
 const { USERID_ERR } = require(path.join(root, 'utils', 'error-messages'));
+const addPaginationOpts = require(path.join(
+  root,
+  'utils',
+  'add-pagination-opts',
+));
 
 const router = express.Router();
 
@@ -17,8 +22,8 @@ const router = express.Router();
 router.get(
   '/',
   asyncHandler(async (req, res, next) => {
-    // MySQL operations: find all users, include articlesCount
-    let users = await User.findAll({
+    // define query options
+    const opts = {
       attributes: {
         include: [
           [
@@ -30,14 +35,17 @@ router.get(
       include: [
         {
           model: Article,
-          as: 'article',
+          as: 'articles',
           attributes: [],
         },
       ],
       group: ['User.id'],
       raw: true,
       nested: true,
-    });
+    };
+
+    // MySQL operations: find all users, include articlesCount
+    let users = await User.findAll(opts);
 
     // MongoDB operations: add viewsCount for each user
     const allViews = await ArticlesView.find();
@@ -49,6 +57,7 @@ router.get(
       return { ...user, viewsCount };
     });
 
+    // send response
     res.json({ data: users });
   }),
 );
@@ -70,6 +79,7 @@ router.get(
       throw new Error(USERID_ERR);
     }
 
+    // send response
     res.json({ data: userById });
   }),
 );
@@ -83,15 +93,22 @@ router.get(
   '/:id/blog',
   asyncHandler(async (req, res, next) => {
     const id = Number(req.params.id);
+    const { after } = req.query;
 
-    // MySQL operations: find all author's articles
-    let articles = await Article.findAll({
+    // define query options
+    const opts = {
       where: { authorId: id },
       include: [{ model: User, as: 'author' }],
-      order: [['id', 'DESC']],
+      order: [['publishedAt', 'DESC'], ['id', 'DESC']],
+      limit: 5,
       raw: true,
       nest: true,
-    });
+    };
+
+    if (after) addPaginationOpts(opts, after);
+
+    // MySQL operations: find all author's articles
+    let articles = await Article.findAll(opts);
 
     // MongoDB operations: add views to all articles
     const allViews = await ArticlesView.find({ authorId: id });
@@ -101,6 +118,7 @@ router.get(
       return { ...article, views };
     });
 
+    // send response
     res.json({ data: articles });
   }),
 );

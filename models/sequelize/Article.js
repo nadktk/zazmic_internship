@@ -16,6 +16,9 @@ Article.init(
       type: DataTypes.TEXT,
       allowNull: false,
     },
+    picture: {
+      type: DataTypes.TEXT,
+    },
     authorId: {
       type: DataTypes.INTEGER,
       allowNull: false,
@@ -33,6 +36,10 @@ Article.init(
 
 Article.associate = (models) => {
   Article.belongsTo(models.User, { as: 'author' });
+  Article.hasMany(models.Comment, {
+    as: 'comments',
+    foreignKey: 'articleId',
+  });
 };
 
 module.exports = Article;
