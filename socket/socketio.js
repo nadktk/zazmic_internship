@@ -1,6 +1,7 @@
 const path = require('path');
 const passportSocketIo = require('passport.socketio');
 const redisAdapter = require('socket.io-redis');
+const { RateLimiterRedis } = require('rate-limiter-flexible');
 
 const { infoLogger, errorLogger } = require(path.join(
   __dirname,
@@ -8,6 +9,20 @@ const { infoLogger, errorLogger } = require(path.join(
   'logger',
   'logger.js',
 ));
+
+const client = require(path.join(
+  __dirname,
+  '..',
+  'database',
+  'redis-client.js',
+));
+
+const rateLimiter = new RateLimiterRedis({
+  redis: client,
+  keyPrefix: 'nadia:socket:rl',
+  points: 10,
+  duration: 1,
+});
 
 module.exports = (io, sessionConfig) => {
   io.adapter(redisAdapter(process.env.REDIS_URL));
@@ -31,6 +46,18 @@ module.exports = (io, sessionConfig) => {
       level: 'info',
       message: `User ${socket.request.user.id
         || 'anonymous'} connected to socket ${socket.id}`,
+    });
+
+    const ip = socket.handshake.headers['x-forwarded-for']
+      || socket.request.connection.remoteAddress;
+
+    socket.use(async (_, next) => {
+      try {
+        await rateLimiter.consume(ip);
+        next();
+      } catch (err) {
+        next(new Error('Rate limit error'));
+      }
     });
 
     socket.on('error', (error) => {
