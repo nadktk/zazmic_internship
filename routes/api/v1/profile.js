@@ -5,6 +5,11 @@ const { Op } = require('sequelize');
 
 const root = path.dirname(process.mainModule.filename);
 const authService = require(path.join(root, 'services', 'auth-service.js'));
+const { createCard } = require(path.join(
+  root,
+  'services',
+  'stripe-service.js',
+));
 const { isLoggedIn } = require(path.join(root, 'passport'));
 const { editProfileValidation } = require(path.join(root, 'validation'));
 
@@ -155,6 +160,31 @@ router.put(
     }
 
     res.json({ data: req.user });
+  }),
+);
+
+/**
+ * @route   PUT api/v1/profile/card
+ * @desc    Create user's stripe card
+ */
+
+router.put(
+  '/card',
+  isLoggedIn,
+  asyncHandler(async (req, res, next) => {
+    const { token } = req.body;
+    const { user } = req;
+
+    // create stripe card
+    const cardId = await createCard(token, user);
+
+    // save card id for the current user
+    await user.update({
+      stripe_card_id: cardId,
+    });
+
+    // send response
+    res.json({ data: user });
   }),
 );
 

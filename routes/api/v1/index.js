@@ -11,6 +11,7 @@ const blogRouter = require(path.join(__dirname, 'blog.js'));
 const commentsRouter = require(path.join(__dirname, 'comments.js'));
 const usersRouter = require(path.join(__dirname, 'users.js'));
 const profileRouter = require(path.join(__dirname, 'profile.js'));
+const feesRouter = require(path.join(__dirname, 'fees.js'));
 
 const apiRouter = express.Router();
 
@@ -19,6 +20,7 @@ apiRouter.use('/blog', apiLimiter, blogRouter);
 apiRouter.use('/users', apiLimiter, usersRouter);
 apiRouter.use('/profile', apiLimiter, profileRouter);
 apiRouter.use('/oauth', oauthRouter);
+apiRouter.use('/fees', feesRouter);
 apiRouter.use('/', authRouter);
 
 module.exports = apiRouter;
