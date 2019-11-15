@@ -31,20 +31,20 @@ User.init(
     picture: {
       type: DataTypes.TEXT,
     },
-    isVerified: {
+    is_verified: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     },
-    isPro: {
+    is_pro: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false,
     },
-    stripeCustomerId: {
+    stripe_customer_id: {
       type: DataTypes.STRING,
     },
-    stripeCardId: {
+    stripe_card_id: {
       type: DataTypes.STRING,
     },
   },

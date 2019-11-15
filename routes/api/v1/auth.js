@@ -9,6 +9,11 @@ const root = path.dirname(process.mainModule.filename);
 const { loginLimiter } = require(path.join(root, 'limiter', 'limiter.js'));
 
 const authService = require(path.join(root, 'services', 'auth-service.js'));
+const { sendVerification } = require(path.join(
+  root,
+  'services',
+  'mail-service.js',
+));
 const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
 const { User } = require(path.join(root, 'models', 'sequelize'));
 const { userCreateValidation, userLoginValidation } = require(path.join(
@@ -27,21 +32,75 @@ router.post(
   '/registration',
   userCreateValidation,
   asyncHandler(async (req, res, next) => {
-    // MySQL operations: create new user
-    const newUser = await User.create(req.body);
+    // MySQL operations: find user by email
+    let user = await User.findOne({ where: { email: req.body.email } });
 
-    // passport login
-    req.login(newUser, (err) => {
-      if (err) next(err);
-      else {
-        // logging success
-        infoLogger.log({
-          level: 'info',
-          message: `User ${newUser.id} was successfully registered`,
+    if (!user) {
+      const newUserData = {
+        firstName: req.body.firstName,
+        lastName: req.body.lastName,
+        email: req.body.email,
+        password: req.body.password,
+      };
+
+      // MySQL operations: create new user if it doesn't exist
+      user = await User.create(newUserData);
+    }
+
+    // check if user was verified
+    if (user.is_verified) {
+      res.json({ data: user });
+    } else {
+      // sign token
+      jwt.sign(
+        { id: user.id },
+        process.env.SECRET,
+        { expiresIn: '1m' },
+        (err, emailToken) => {
+          if (err) next(err);
+          else {
+            // send email
+            sendVerification(emailToken, user);
+
+            // send response
+            delete user.password;
+            res.json({ data: user });
+          }
+        },
+      );
+    }
+  }),
+);
+
+/**
+ * @route   POST api/v1/registration/verify
+ * @desc    Email verification
+ */
+
+router.post(
+  '/registration/verify',
+  asyncHandler(async (req, res, next) => {
+    jwt.verify(req.body.token, process.env.SECRET, async (err, decoded) => {
+      if (err) {
+        res.status(403).json({ errors: [{ msg: 'Try to register again' }] });
+      } else {
+        // const user = await User.findOne();
+        const user = await User.findByPk(decoded.id);
+        await user.update({ is_verified: true });
+
+        // passport login
+        req.login(user, (error) => {
+          if (error) next(error);
+          else {
+            // logging success
+            infoLogger.log({
+              level: 'info',
+              message: `User ${user.id} was successfully verified`,
+            });
+
+            res.send({ data: user });
+          }
         });
-
-        delete newUser.password;
-        res.json({ data: newUser });
       }
     });
   }),

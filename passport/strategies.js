@@ -36,6 +36,7 @@ exports.localStrategy = new LocalStrategy(
       if (
         userByEmail
         && (await bcrypt.compare(password, userByEmail.password))
+        && userByEmail.is_verified
       ) {
         delete userByEmail.password;
         done(null, userByEmail);
@@ -56,7 +57,6 @@ const findOrRegisterUser = async (provider, providerUserData, done) => {
   //
   const user = await User.findOne({
     where: { email: providerUserData.email },
-    raw: true,
   });
 
   if (!user) {
@@ -68,6 +68,7 @@ const findOrRegisterUser = async (provider, providerUserData, done) => {
       password: Math.random()
         .toString(36)
         .slice(2),
+      is_verified: true,
     };
 
     // transaction for user and connection creation
@@ -100,17 +101,35 @@ const findOrRegisterUser = async (provider, providerUserData, done) => {
     }
     done(null, createdUser);
   } else {
-    await Account.findOrCreate({
-      where: {
-        provider,
-        providerUserId: providerUserData.id,
-      },
-      defaults: {
-        provider,
-        providerUserId: providerUserData.id,
-        userId: user.id,
-      },
-    });
+    let transaction;
+    try {
+      transaction = await dbMysql.transaction();
+
+      // verify user if he wasn't
+      if (!user.is_verified) {
+        await user.update({ is_verified: true }, { transaction });
+      }
+
+      // create account connection if it doesn't exist
+      await Account.findOrCreate({
+        where: {
+          provider,
+          providerUserId: providerUserData.id,
+        },
+        defaults: {
+          provider,
+          providerUserId: providerUserData.id,
+          userId: user.id,
+        },
+        transaction,
+      });
+
+      await transaction.commit();
+    } catch (err) {
+      if (transaction) await transaction.rollback();
+      throw err;
+    }
+
     done(null, user);
   }
 };
