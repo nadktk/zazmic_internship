@@ -55,7 +55,7 @@ router.post(
       jwt.sign(
         { id: user.id },
         process.env.SECRET,
-        { expiresIn: '1m' },
+        { expiresIn: '1h' },
         (err, emailToken) => {
           if (err) next(err);
           else {
