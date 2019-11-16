@@ -57,11 +57,11 @@ router.put(
   '/',
   isLoggedIn,
   asyncHandler(async (req, res, next) => {
-    const amount = Number(req.body.amount) * 100;
+    const chargeAmount = Number(req.body.amount) * 100;
     const { user } = req;
 
     // create a new charge
-    const charge = await createCharge(amount, user);
+    const charge = await createCharge(chargeAmount, user);
 
     // send email notification
     sendPaymentNotification(charge.receipt_url, user);
@@ -76,8 +76,10 @@ router.put(
       sendProNotification(user);
     }
 
+    const amount = PRICE - total > 0 ? PRICE - total : 0;
+
     // send response
-    res.json({ data: { user } });
+    res.json({ data: { user, amount } });
   }),
 );
 
