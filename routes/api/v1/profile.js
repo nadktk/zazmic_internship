@@ -5,6 +5,11 @@ const { Op } = require('sequelize');
 
 const root = path.dirname(process.mainModule.filename);
 const authService = require(path.join(root, 'services', 'auth-service.js'));
+const { createCard, createCustomer } = require(path.join(
+  root,
+  'services',
+  'stripe-service.js',
+));
 const { isLoggedIn } = require(path.join(root, 'passport'));
 const { editProfileValidation } = require(path.join(root, 'validation'));
 
@@ -155,6 +160,39 @@ router.put(
     }
 
     res.json({ data: req.user });
+  }),
+);
+
+/**
+ * @route   PUT api/v1/profile/card
+ * @desc    Create user's stripe card
+ */
+
+router.put(
+  '/card',
+  isLoggedIn,
+  asyncHandler(async (req, res, next) => {
+    const { token } = req.body;
+    const { user } = req;
+
+    let customerId = user.stripe_customer_id;
+    const updateData = {};
+
+    // create stripe customer for user if it doesn't exist
+    if (!customerId) {
+      customerId = await createCustomer(user.email);
+      updateData.stripe_customer_id = customerId;
+    }
+
+    // create stripe card
+    const cardId = await createCard(token, customerId);
+    updateData.stripe_card_id = cardId;
+
+    // MySQL operation: save card id  and stripe customer id for the current user
+    await user.update(updateData);
+
+    // send response
+    res.json({ data: user });
   }),
 );
 
