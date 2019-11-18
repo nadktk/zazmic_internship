@@ -5,7 +5,7 @@ const asyncHandler = require('express-async-handler');
 const root = path.dirname(process.mainModule.filename);
 const { isLoggedIn } = require(path.join(root, 'passport'));
 
-const { createCharge, getChargesTotal, createCustomer } = require(path.join(
+const { createCharge, getChargesTotal } = require(path.join(
   root,
   'services',
   'stripe-service',
@@ -32,19 +32,16 @@ router.get(
   asyncHandler(async (req, res, next) => {
     const { user } = req;
 
-    // create stripe customer for user if it doesn't exist
-    if (!user.stripe_customer_id) {
-      const customer = await createCustomer(user.email);
-      user.update({ stripe_customer_id: customer.id });
+    if (user.stripe_customer_id) {
+      // get total amount of user's charges
+      const total = await getChargesTotal(user.stripe_customer_id);
+      const amount = PRICE - total > 0 ? PRICE - total : 0;
+
+      // send response
+      res.json({ data: { amount } });
+    } else {
+      res.json({ data: { amount: PRICE } });
     }
-
-    // get total amount of user's charges
-    const total = await getChargesTotal(user.stripe_customer_id);
-
-    const amount = PRICE - total > 0 ? PRICE - total : 0;
-
-    // send response
-    res.json({ data: { amount } });
   }),
 );
 
@@ -64,7 +61,7 @@ router.put(
     const charge = await createCharge(chargeAmount, user);
 
     // send email notification
-    sendPaymentNotification(charge.receipt_url, user);
+    await sendPaymentNotification(charge.receipt_url, user);
 
     // get total amount of user's charges
     const total = await getChargesTotal(user.stripe_customer_id);
@@ -73,7 +70,7 @@ router.put(
       await user.update({ is_pro: true });
 
       // send email notification
-      sendProNotification(user);
+      await sendProNotification(user);
     }
 
     const amount = PRICE - total > 0 ? PRICE - total : 0;

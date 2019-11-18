@@ -56,15 +56,19 @@ router.post(
         { id: user.id },
         process.env.SECRET,
         { expiresIn: '1h' },
-        (err, emailToken) => {
+        async (err, emailToken) => {
           if (err) next(err);
           else {
-            // send email
-            sendVerification(emailToken, user);
+            try {
+              // send email
+              await sendVerification(emailToken, user);
 
-            // send response
-            delete user.password;
-            res.json({ data: user });
+              // send response
+              delete user.password;
+              res.json({ data: user });
+            } catch (error) {
+              next(error);
+            }
           }
         },
       );

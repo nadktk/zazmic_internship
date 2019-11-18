@@ -39,8 +39,8 @@ exports.createCharge = async (amount, user) => {
  * Create stripe customer's card
  */
 
-exports.createCard = async (token, user) => {
-  const source = await stripe.customers.createSource(user.stripe_customer_id, {
+exports.createCard = async (token, customerId) => {
+  const source = await stripe.customers.createSource(customerId, {
     source: token,
   });
   return source.id;

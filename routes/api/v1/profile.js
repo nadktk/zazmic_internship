@@ -5,7 +5,7 @@ const { Op } = require('sequelize');
 
 const root = path.dirname(process.mainModule.filename);
 const authService = require(path.join(root, 'services', 'auth-service.js'));
-const { createCard } = require(path.join(
+const { createCard, createCustomer } = require(path.join(
   root,
   'services',
   'stripe-service.js',
@@ -175,12 +175,16 @@ router.put(
     const { token } = req.body;
     const { user } = req;
 
-    // create stripe card
-    const cardId = await createCard(token, user);
+    // create stripe customer for user
+    const customer = await createCustomer(user.email);
 
-    // save card id for the current user
+    // create stripe card
+    const cardId = await createCard(token, customer.id);
+
+    // MySQL operation: save card id  and stripe customer id for the current user
     await user.update({
       stripe_card_id: cardId,
+      stripe_customer_id: customer.id,
     });
 
     // send response
