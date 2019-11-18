@@ -175,17 +175,21 @@ router.put(
     const { token } = req.body;
     const { user } = req;
 
-    // create stripe customer for user
-    const customer = await createCustomer(user.email);
+    let customerId = user.stripe_customer_id;
+    const updateData = {};
+
+    // create stripe customer for user if it doesn't exist
+    if (!customerId) {
+      customerId = await createCustomer(user.email);
+      updateData.stripe_customer_id = customerId;
+    }
 
     // create stripe card
-    const cardId = await createCard(token, customer.id);
+    const cardId = await createCard(token, customerId);
+    updateData.stripe_card_id = cardId;
 
     // MySQL operation: save card id  and stripe customer id for the current user
-    await user.update({
-      stripe_card_id: cardId,
-      stripe_customer_id: customer.id,
-    });
+    await user.update(updateData);
 
     // send response
     res.json({ data: user });

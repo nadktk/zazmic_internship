@@ -6,7 +6,7 @@ const stripe = require('stripe')(process.env.STRIPE_SK);
 
 exports.createCustomer = async (email) => {
   const customer = await stripe.customers.create({ email });
-  return customer;
+  return customer.id;
 };
 
 /**
