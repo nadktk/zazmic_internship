@@ -1,0 +1,60 @@
+version: 2.1
+jobs:
+  build:
+    docker:
+      - image: circleci/node:12
+      - image: circleci/mysql:5.7
+        environment:
+          MYSQL_ROOT_PASSWORD: password
+          MYSQL_DATABASE: database
+          MYSQL_USER: user
+          MYSQL_PASSWORD: password
+      - image: mongo:latest
+        environment:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: password
+          MONGO_INITDB_DATABASE: database
+    working_directory: ~/build
+    steps:
+      - checkout
+      - run:
+          name: Install MongoDB Shell
+          command: |
+            curl https://www.mongodb.org/static/pgp/server-4.2.asc | sudo apt-key add -
+            echo "deb http://repo.mongodb.org/apt/debian stretch/mongodb-org/4.2 main" | sudo tee /etc/apt/sources.list.d/mongodb-org-4.2.list
+            sudo apt-get update
+            sudo apt-get install -y mongodb-org-shell
+      - run:
+          name: Configure MongoDB
+          command: mongo -u root -p password < ./mongo-init.js
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+      - run:
+          name: Install
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Test
+          command: npm run test-circleci
+  deploy:
+    docker:
+      - image: circleci/node:12
+    steps:
+      - run: sudo apt-get install sshpass -y
+      - run: sshpass -p ${PASSWORD} ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o PreferredAuthentications=password nadia@35.225.244.173 './deploy.sh'
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
