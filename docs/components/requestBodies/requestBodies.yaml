@@ -77,3 +77,16 @@ components:
           description: comments's content
       required:
         - content
+
+    userUpdate:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: user's first name
+        lastName:
+          type: string
+          description: user's last name
+      required:
+        - firstName
+        - lastName

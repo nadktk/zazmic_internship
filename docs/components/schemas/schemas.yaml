@@ -18,6 +18,11 @@ components:
           type: string
           format: email
           description: email address
+        picture:
+          type: string
+          format: uri
+          nullable: true
+          description: user's profile picture URL
         is_pro:
           type: boolean
           nullable: true
@@ -26,11 +31,6 @@ components:
           type: boolean
           nullable: true
           description: user's verification status
-        picture:
-          type: string
-          format: uri
-          nullable: true
-          description: user's profile picture URL
         stripe_customer_id:
           type: string
           nullable: true

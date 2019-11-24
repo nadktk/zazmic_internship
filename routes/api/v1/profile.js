@@ -159,7 +159,7 @@ router.put(
       await deleteFile(oldPicture);
     }
 
-    res.json({ data: req.user });
+    res.json({ data: { picture: req.user.picture } });
   }),
 );
 

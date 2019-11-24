@@ -68,7 +68,7 @@ paths:
           required: true
       responses:
         200:
-          description: Array of articles
+          description: Article Details
           content:
             application/json:
               schema:
@@ -147,6 +147,7 @@ paths:
     get:
       tags:
         - Blog
+        - Users
       summary: Gets a list of all author's articles
       parameters:
         - in: query

@@ -1,5 +1,7 @@
 components:
   responses:
+    302:
+      description: Authentication redirection
     401:
       description: Unauthorized request
     403:
