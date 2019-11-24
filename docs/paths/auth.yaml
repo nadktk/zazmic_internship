@@ -1,0 +1,101 @@
+paths:
+  # register user
+  /api/v1/registration:
+    post:
+      tags:
+        - Auth
+      summary: Creates a new user (not verified), sends email with verification link
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/requestBodies/registration'
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/registration'
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        422:
+          $ref: '#/components/responses/422'
+        500:
+          $ref: '#/components/responses/500'
+
+  # email verification
+  api/v1/registration/verify:
+    post:
+      tags:
+        - Auth
+      summary: Accepts verification token, verifies user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/verify'
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/500'
+
+  # login user
+  /api/v1/login:
+    post:
+      tags:
+        - Auth
+      summary: Login user
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/requestBodies/login'
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/login'
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/401'
+        404:
+          $ref: '#/components/responses/404'
+        422:
+          $ref: '#/components/responses/422'
+        500:
+          $ref: '#/components/responses/500'
+
+  # logout user
+  /api/v1/logout:
+    post:
+      tags:
+        - Auth
+      summary: Logout user
+      responses:
+        200:
+          description: Empty response
+        500:
+          $ref: '#/components/responses/500'

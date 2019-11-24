@@ -1,0 +1,172 @@
+paths:
+  # get all articles
+  /api/v1/blog:
+    get:
+      tags:
+        - Blog
+      summary: Gets a list of all blog's articles
+      parameters:
+        - in: query
+          name: after
+          schema:
+            type: string
+          description: Continuation token
+      responses:
+        200:
+          description: Array of articles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+        500:
+          $ref: '#/components/responses/500'
+
+    # post article
+    post:
+      tags:
+        - Blog
+      summary: Post article
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/requestBodies/article'
+      responses:
+        200:
+          description: Created article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Article'
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+
+  # get article by id
+  /api/v1/blog/{articleId}:
+    get:
+      tags:
+        - Blog
+      summary: Get article by id
+      parameters:
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: Array of articles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Article'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+
+    # update article by id
+    put:
+      tags:
+        - Blog
+      summary: Update article by id
+      parameters:
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/requestBodies/article'
+      responses:
+        200:
+          description: Updated article
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Article'
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+
+    # delete article by id
+    delete:
+      tags:
+        - Blog
+      summary: Delete article by id
+      parameters:
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: The article was successfully deleted, empty response
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'
+
+  # get all user's articles
+  /api/v1/users/{userId}/blog:
+    get:
+      tags:
+        - Blog
+      summary: Gets a list of all author's articles
+      parameters:
+        - in: query
+          name: after
+          schema:
+            type: string
+          description: Continuation token
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          description: Author's user ID
+          required: true
+      responses:
+        200:
+          description: Array of articles
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+        500:
+          $ref: '#/components/responses/500'

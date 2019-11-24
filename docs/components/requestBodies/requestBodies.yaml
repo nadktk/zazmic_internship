@@ -1,0 +1,70 @@
+components:
+  requestBodies:
+    registration:
+      type: object
+      properties:
+        firstName:
+          type: string
+          description: user's first name
+        lastName:
+          type: string
+          description: user's last name
+        email:
+          type: string
+          format: email
+          description: valid email address only
+        password:
+          type: string
+          format: password
+          minLength: 6
+          description: any string at least 6 chars long
+      required:
+        - firstName
+        - lastName
+        - email
+        - password
+
+    login:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+          description: valid email address only
+        password:
+          type: string
+          format: password
+          minLength: 6
+          description: any string at least 6 chars long
+      required:
+        - email
+        - password
+
+    verify:
+      type: object
+      properties:
+        token:
+          type: string
+          description: verification token
+
+    article:
+      type: object
+      properties:
+        title:
+          type: string
+          description: article's title
+        content:
+          type: string
+          description: article's content
+        publishedAt:
+          type: string
+          format: date-time
+          description: article's content
+        picture:
+          type: string
+          format: binary
+          description: article's picture *(optional)*
+      required:
+        - title
+        - content
+        - publishedAt
