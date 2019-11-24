@@ -72,7 +72,7 @@ router.post(
       articleId,
     };
 
-    // MySQL operations: create new article
+    // MySQL operations: create new comment
     let newComment = await Comment.create(newComData);
 
     // log success
@@ -111,10 +111,14 @@ router.delete(
 
     // MySQL operations: find and destroy the comment
     const commentToDestroy = await Comment.findByPk(id);
-    if (!commentToDestroy) throw new Error(COMMENTID_ERR);
+    if (!commentToDestroy) {
+      res.status(404);
+      throw new Error(COMMENTID_ERR);
+    }
 
     // check permissions
     if (commentToDestroy.authorId !== req.user.id) {
+      res.status(403);
       throw new Error(PERMISSION_ERR);
     }
 

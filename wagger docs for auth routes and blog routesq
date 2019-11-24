@@ -1,0 +1,517 @@
+[33mcommit 4a55635d745afd52f58b5c84c0eee87e691b6d11[m[33m ([m[1;36mHEAD -> [m[1;32mswagger[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Nov 24 03:21:13 2019 +0200
+
+    Added swagger docs for auth routes and blog routes
+
+[33mcommit 4da7e7ec87bb04f21548515de4a664cd1f3e6d4b[m[33m ([m[1;31morigin/master[m[33m, [m[1;32mmaster[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 22 22:34:37 2019 +0200
+
+    Version was changed
+
+[33mcommit 793550edac6c5a98fa74a806e1810bed9397381b[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 22 22:12:53 2019 +0200
+
+    Version was changed
+
+[33mcommit 473907ada6a19327c15f76e455234bc977a5dd02[m
+Merge: d7ac0eb 81de325
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 22 22:09:05 2019 +0200
+
+    Merge pull request #10 from nadktk/circleci
+    
+    Added circleci config
+
+[33mcommit 81de325cd960d1a235bee90e713f0634486f338d[m[33m ([m[1;31morigin/circleci[m[33m, [m[1;32mcircleci[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 22 22:03:48 2019 +0200
+
+    Added circleci config
+
+[33mcommit d7ac0ebd7c6ef8ab25bef36c5b7b365796f3c010[m
+Merge: e297fe3 5e82267
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 19 00:56:35 2019 +0200
+
+    Merge pull request #8 from nadktk/send-mail
+    
+    Send mail and Go Pro
+
+[33mcommit 5e822672fd6e1ff8a78340992e3a777c717ccdf6[m[33m ([m[1;31morigin/send-mail[m[33m, [m[1;32msend-mail[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 19 00:37:43 2019 +0200
+
+    Added check before stripe customer creation
+
+[33mcommit 9e1c99c3191b8c2984c2b95db48165bbfca5bf2e[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 18 15:49:37 2019 +0200
+
+    Changes after review
+
+[33mcommit a8cec597030883b05ba3572fa120a7764c929444[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Nov 17 00:52:18 2019 +0200
+
+    Added amount value to response on PUT /fees route
+
+[33mcommit 5b3072e6dba4b6f8a74c6aaa1926a6df66f67c26[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 15 22:16:43 2019 +0200
+
+    Fixed token TTL
+
+[33mcommit 134d48d89539e08b5387bff5c31982a6a00c2512[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 15 21:36:41 2019 +0200
+
+    Implemented stripe functionality
+
+[33mcommit 672f37b41a02873491a839979997e9619f5c375d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 15 14:54:45 2019 +0200
+
+    Added registration verification functionality
+
+[33mcommit e29643ac8194c745e7c567207914a73b11dd7bdb[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Nov 13 18:20:02 2019 +0200
+
+    Created migration for new columns and updated User model
+
+[33mcommit e297fe347e3481f05c6c80b8ce4ab8e62670f1df[m
+Merge: d9f8c9a 3ff9700
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 12 17:05:48 2019 +0200
+
+    Merge pull request #7 from nadktk/dev
+    
+    Dev
+
+[33mcommit 3ff9700d3f862634072f21449e7fb0aca38d56be[m
+Merge: b7c26b4 6c4e84b
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 12 15:41:26 2019 +0200
+
+    Merge pull request #6 from nadktk/rl
+    
+    Added sockets rate limiter
+
+[33mcommit 6c4e84b77420d1e7a8b74cd656f95fa293ea26ea[m[33m ([m[1;31morigin/rl[m[33m, [m[1;32mrl[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 12 13:01:41 2019 +0200
+
+    changed number of points allowed
+
+[33mcommit 1dd3feb1f56a7a9aa6b75f86dc51c02d31271061[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Nov 12 08:53:56 2019 +0200
+
+    Added sockets rate limiter
+
+[33mcommit b7c26b400f71b81752278f91f9e2f09a078cc8b1[m
+Merge: 17f1ef9 b90ef7f
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 11 22:44:25 2019 +0200
+
+    Merge pull request #4 from nadktk/comments
+    
+    Comments, socket.io, validation, pagination
+
+[33mcommit b90ef7f549443f67694440ee8d60604fd4a53bd2[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 11 22:33:51 2019 +0200
+
+    one more fix
+
+[33mcommit 6c1e3a8d87f0a7b3cc5b75aaa94f4324d32d003d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 11 18:02:29 2019 +0200
+
+    fixed pagination options
+
+[33mcommit 02d1e93e04d7b6710315fd77120a01b6f4fa62d3[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 11 15:13:39 2019 +0200
+
+    fixed blog pagination and order for user's articles
+
+[33mcommit 28979f116471e1876623a4baa9d7c72d5eb8a1e3[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 8 21:56:16 2019 +0200
+
+    changed confusing names
+
+[33mcommit 5e5c8ed24591a4838ce4c3b6d2921dd71b22172d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 8 16:48:37 2019 +0200
+
+    fixed update article logic
+
+[33mcommit 293a80374f616944278e0e15167223afe212c82d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 8 16:03:14 2019 +0200
+
+    fixed redis url
+
+[33mcommit 51d433b7a141d294bffd4dbf394de0544d6d6c8f[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Nov 8 15:11:03 2019 +0200
+
+    added validation and sockets
+
+[33mcommit b7ee83349317eabf93429d8f1d2484a73235bd29[m
+Merge: 3dfdbeb f9bfb16
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Nov 7 17:03:55 2019 +0200
+
+    Merge branch 'socketio' into comments
+
+[33mcommit 3dfdbebc37d8a02fa4b3952d12872975cf6ced36[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Nov 7 17:03:37 2019 +0200
+
+    added pagination
+
+[33mcommit 1f817a336eb3f0f7debf22342944ce42222fd13b[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Nov 6 17:06:45 2019 +0200
+
+    created model and migration for comments
+
+[33mcommit f9bfb163389a3ea6ccd217821b331abcc309af51[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Nov 6 12:15:32 2019 +0200
+
+    added socket.io to app
+
+[33mcommit 5111721929ac5ba5a4149bb90693ddf1a7c91076[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Nov 6 10:38:45 2019 +0200
+
+    added packages
+
+[33mcommit 17f1ef929e1d9b24a39638ba2c304d0c95010407[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Nov 6 01:25:59 2019 +0200
+
+    fixed resizing vertical size, added csrf
+
+[33mcommit c91379b9904e86606099659e199a58bf5f559a36[m
+Merge: 91b0439 8e4b41c
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Mon Nov 4 16:40:59 2019 +0200
+
+    Merge pull request #3 from nadktk/images
+    
+    images features implemented
+
+[33mcommit 8e4b41c4ea74421a369a1940ed9eb56215dc3d33[m[33m ([m[1;31morigin/images[m[33m)[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Nov 3 14:20:36 2019 +0200
+
+    images features implemented
+
+[33mcommit d9f8c9ae05d4700ec9f0dacbff849c4e4020ed30[m
+Merge: 9bf5109 91b0439
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Tue Oct 29 21:00:39 2019 +0300
+
+    Merge pull request #2 from nadktk/dev
+    
+    changed endpoints and added authorization
+
+[33mcommit 91b0439aed9ad40cd5ec96a497a795b4397ec2e3[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Oct 28 14:25:11 2019 +0300
+
+    fixed missed colon
+
+[33mcommit 4d3824e03ba87e8493d5a6ea7e61550b46a1b05a[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Oct 28 14:11:08 2019 +0300
+
+    set trust proxy
+
+[33mcommit 16713e6a0ef2215b3d75904e0532c603571d0c4e[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 21:42:10 2019 +0300
+
+    added tokens routes
+
+[33mcommit ac2cef974d636df4d0072f8d1663d4e68068dc2a[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 19:55:48 2019 +0300
+
+    added redis store for rate limits
+
+[33mcommit e971a5d5849e41274d1c39e5b29bdba289b0e662[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 18:10:02 2019 +0300
+
+    added limiters
+
+[33mcommit 7f060c4db72e42708faa1b14c8b3d89f2e384816[m
+Merge: 85f7dcc e5da6ec
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 17:20:08 2019 +0300
+
+    Merge branch 'oauth' into dev
+
+[33mcommit 85f7dcc1c437d1d48838f4234d8eaeee77c394bd[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 15:50:03 2019 +0300
+
+    fixed after review
+
+[33mcommit e5da6ec48f23f094a7673f1870c5e2d4ae4664f7[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sun Oct 27 14:21:36 2019 +0300
+
+    added google and facebook authentication
+
+[33mcommit 7efdd2958cad93b611ee69ace123a25532bd65b5[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 26 00:04:53 2019 +0300
+
+    add redis string
+
+[33mcommit a0611b3dac4702ac050118e1e68fe9cdacd7def5[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 25 23:43:28 2019 +0300
+
+    add user authentication functionality
+
+[33mcommit 9bf5109330e24ca4d4ba9d3eb64257451f1d9a42[m
+Merge: f7892d4 72399b1
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 23 20:49:33 2019 +0300
+
+    Merge pull request #1 from nadktk/dev
+    
+    added mongoDB for article views
+
+[33mcommit 72399b15850a45f1f514e8e4d2d004b3056e1df8[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 23 08:19:55 2019 +0300
+
+    removed unnecessary +
+
+[33mcommit 4d3dac666d8a08312eedfe7bfba38ba8191ad54e[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 23 07:49:33 2019 +0300
+
+    fixed the issues
+
+[33mcommit 4c98665dbe52b2b3d82902fd9fd3b144ed21c6e5[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Oct 21 01:08:02 2019 +0300
+
+    created articles history update script
+
+[33mcommit 251deb1c2b128f4fafd15f9163875c03a6fbbb1d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 19 20:15:46 2019 +0300
+
+    created articles-history model
+
+[33mcommit bab37245a76f47aae00d4c8d334c24b16739b53e[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 19 05:35:54 2019 +0300
+
+    added articles_views logging
+
+[33mcommit 785a3c121b79be17f6f1fec608358804df5a250c[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 19 05:08:00 2019 +0300
+
+    changed logging (to console but not to files)
+
+[33mcommit 0142e7310eb28a873aaef8361290cb240598a243[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 18 13:06:10 2019 +0300
+
+    timestamp fixed
+
+[33mcommit e188e57d23339eeb2fad9bbbe287115b74476634[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 18 12:28:42 2019 +0300
+
+    add logger
+
+[33mcommit 81b6a38d08b394561f4de027e8e631f21617d0d2[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 17 16:35:19 2019 +0300
+
+    installed winston and winston-mongodb packages
+
+[33mcommit d381b8991ac4214bb75cb39db558ae75b17f2b90[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 17 14:52:35 2019 +0300
+
+    collection name fixed
+
+[33mcommit 0009bb2a68a7bfa8efda60704dc572250d859b5f[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 17 12:34:12 2019 +0300
+
+    added mongoDB for article views
+
+[33mcommit f7892d4e3b9ff436d05d85f02491cfc8c0f8f432[m
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Tue Oct 15 20:36:30 2019 +0300
+
+    Update README.md
+
+[33mcommit ddf3231cf5f5c49cf34b98d9227a319e01ca2fa4[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Oct 15 12:40:17 2019 +0300
+
+    fixed PUT routes
+
+[33mcommit 20b1162a42f626e98e2e912d3e2194af9c20a1f7[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Oct 15 02:07:15 2019 +0300
+
+    fixed user DELETE route
+
+[33mcommit fd76821cb4ca9f166723c7ebc5e72bb27c35a5bf[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Tue Oct 15 01:53:14 2019 +0300
+
+    added asyncHandler, changed PUT/DELETE routes logic
+
+[33mcommit ce530ea6b5179e925bf8d89e01db163dabb64121[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Mon Oct 14 23:42:04 2019 +0300
+
+    fixed migrations
+
+[33mcommit 564d4313e578e0b60ea5a1a62d4afd79bb3c69b3[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 12 10:36:46 2019 +0300
+
+    added path module, simplified the structure
+
+[33mcommit 3f7da4a374598cd38eee46a99f9d3d39ba68d6c3[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 11 19:07:59 2019 +0300
+
+    fixed user's blog route
+
+[33mcommit 295298ce91fbe261a244f57e79fa9b44e6acf5aa[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 11 14:37:53 2019 +0300
+
+    commented out code was deleted
+
+[33mcommit 76f7d058ce1cdb97b5b3ab9204bf01b406fe87d6[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 11 13:39:07 2019 +0300
+
+    add mysql
+
+[33mcommit ac09aa15ca10ee18a63d2e610d8d73df11886f38[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 5 00:01:19 2019 +0000
+
+    serv fixes
+
+[33mcommit dcb91d7eeb82036fd7193b80354ea08c2d37643e[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Sat Oct 5 02:03:29 2019 +0300
+
+    changed to async await, added id generator, changed to desc order
+
+[33mcommit 8774941d20aab88472c15b86db8fc082a3bcf299[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 4 11:28:56 2019 +0300
+
+    edited gitignore
+
+[33mcommit c000f58f37c886033e2a649382de0ff2966b1a0b[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Fri Oct 4 11:02:40 2019 +0300
+
+    added simple record and user data validation
+
+[33mcommit 4350481b7cdf3b57289732f33bf9268eb36c7848[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 18:19:29 2019 +0300
+
+    temp2
+
+[33mcommit fbaf825f00d53babdd7b7569d6a36f25a56d84ed[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 18:08:46 2019 +0300
+
+    temp
+
+[33mcommit dd5ec065120d45ba7a7b81c39da43a1566a2bfc4[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 15:51:12 2019 +0300
+
+    edited comments
+
+[33mcommit 28d004be066449f5cf1eae87d7f28a4cbe494f27[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 15:37:48 2019 +0300
+
+    added error handler
+
+[33mcommit 9a57d99dd27f968b8a2874b434bca99754ad7f91[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 13:33:53 2019 +0300
+
+    finished all api routes
+
+[33mcommit ef8f76530bf2b002d0d98a1243ee2b425c27068d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 10:00:45 2019 +0300
+
+    splited blog and users routers, started users api
+
+[33mcommit 95d9a16dedc574512461596db9826822bfe10f71[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 07:22:45 2019 +0300
+
+    finished all blog routes
+
+[33mcommit efc6584a278faec71712c4d09cb924cedf0ca00b[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Thu Oct 3 06:56:34 2019 +0300
+
+    added update record route
+
+[33mcommit b3ff4f33dedae5f20bd32fa0fc75491559743274[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 2 20:58:42 2019 +0300
+
+    get blog, get record by id,  add blog record, get users routes added
+
+[33mcommit 03b584992f6e877887072e181443d18159ca514d[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 2 12:19:41 2019 +0300
+
+    added .env and env-cmd package, started api routes
+
+[33mcommit 092c661e8bf0b155fb9148bb4fcb02342232fe4f[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 2 10:15:42 2019 +0300
+
+    Express initialization
+
+[33mcommit 2c6eb22ce7390f46929e2b25dc58bd70d45b07b3[m
+Author: Nadiia Katkova <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 2 09:31:31 2019 +0300
+
+    Create README.md
+
+[33mcommit 11ce0a2c0f67301cac50103e1a4e3a74e8a4e935[m
+Author: nadktk <nadezhda.katkova@gmail.com>
+Date:   Wed Oct 2 09:27:59 2019 +0300
+
+    initial eslint and pre-commit

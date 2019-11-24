@@ -100,14 +100,27 @@ components:
         content:
           type: string
           description: comment's content
-        articleId:
-          type: integer
-          description: comment's article ID
         authorId:
           type: integer
           description: comment's author user ID
-        author:
-          $ref: '#components/schemas/User'
+        articleId:
+          type: integer
+          description: comment's article ID
         createdAt:
           type: string
           format: date-time
+        author:
+          $ref: '#components/schemas/User'
+
+    ValidationError:
+      type: object
+      title: ValidationError
+      properties:
+        value:
+          type: string
+        msg:
+          type: string
+        param:
+          type: string
+        location:
+          type: string

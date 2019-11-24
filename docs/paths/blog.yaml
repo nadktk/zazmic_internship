@@ -49,6 +49,8 @@ paths:
                     $ref: '#/components/schemas/Article'
         401:
           $ref: '#/components/responses/401'
+        422:
+          $ref: '#/components/responses/422'
         500:
           $ref: '#/components/responses/500'
 
@@ -112,6 +114,8 @@ paths:
           $ref: '#/components/responses/403'
         404:
           $ref: '#/components/responses/404'
+        422:
+          $ref: '#/components/responses/422'
         500:
           $ref: '#/components/responses/500'
 

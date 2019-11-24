@@ -68,3 +68,12 @@ components:
         - title
         - content
         - publishedAt
+
+    comment:
+      type: object
+      properties:
+        content:
+          type: string
+          description: comments's content
+      required:
+        - content
