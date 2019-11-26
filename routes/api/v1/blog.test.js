@@ -21,7 +21,7 @@ describe('Blog Endpoints', () => {
 
     article = await createArticle(user.id);
 
-    await agent.post('/api/v1/login').send({
+    await request.post('/api/v1/login').send({
       email: user.email,
       password: 'password',
     });
@@ -39,7 +39,7 @@ describe('Blog Endpoints', () => {
   });
 
   it('should return blog record by its ID', async () => {
-    const res = await agent.get(`/api/v1/blog/${article.id}`);
+    const res = await request.get(`/api/v1/blog/${article.id}`);
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(res.body.data.authorId).toBe(user.id);
