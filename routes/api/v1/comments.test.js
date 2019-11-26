@@ -12,30 +12,30 @@ jest.setTimeout(10000);
 const agent = supertest.agent(app);
 
 describe('Comments Endpoints', () => {
-  let user1; let user2; let article; let comment1; let
-    comment2;
+  // let user1; let user2; let article; let comment1; let
+  //   comment2;
 
-  beforeAll(async () => {
-    user1 = await registerUser();
-    await user1.update({
-      is_verified: true,
-    });
+  // beforeAll(async () => {
+  //   user1 = await registerUser();
+  //   await user1.update({
+  //     is_verified: true,
+  //   });
 
-    user2 = await registerUser();
+  //   user2 = await registerUser();
 
-    article = await createArticle(user1.id);
+  //   article = await createArticle(user1.id);
 
-    await agent.post('/api/v1/login').send({
-      email: user1.email,
-      password: 'password',
-    });
+  //   await agent.post('/api/v1/login').send({
+  //     email: user1.email,
+  //     password: 'password',
+  //   });
 
-    comment2 = await createComment(user2.id, article.id);
-  });
+  //   comment2 = await createComment(user2.id, article.id);
+  // });
 
-  afterAll(async () => {
-    await clearDatabase();
-  });
+  // afterAll(async () => {
+  //   await clearDatabase();
+  // });
 
   it('should return list of comments by artcile ID', async () => {
     const res = await agent.get(`/api/v1/blog/${article.id}/comments`);

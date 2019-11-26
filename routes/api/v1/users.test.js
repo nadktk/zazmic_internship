@@ -9,26 +9,26 @@ jest.setTimeout(10000);
 const request = supertest(app);
 
 describe('Users Endpoints', () => {
-  let user1;
-  let user2;
-  let after;
-  const userArticles = [];
-  const n = 5;
+  // let user1;
+  // let user2;
+  // let after;
+  // const userArticles = [];
+  // const n = 5;
 
-  beforeAll(async () => {
-    user1 = await registerUser();
-    user2 = await registerUser();
-    for (let i = 0; i < n + 1; i++) {
-      const article = await createArticle(user1.id);
-      userArticles.push(article);
-    }
-    await request.get(`/api/v1/blog/${userArticles[0].id}`);
-    await request.get(`/api/v1/blog/${userArticles[1].id}`);
-  });
+  // beforeAll(async () => {
+  //   user1 = await registerUser();
+  //   user2 = await registerUser();
+  //   for (let i = 0; i < n + 1; i++) {
+  //     const article = await createArticle(user1.id);
+  //     userArticles.push(article);
+  //   }
+  //   await request.get(`/api/v1/blog/${userArticles[0].id}`);
+  //   await request.get(`/api/v1/blog/${userArticles[1].id}`);
+  // });
 
-  afterAll(async () => {
-    await clearDatabase();
-  });
+  // afterAll(async () => {
+  //   await clearDatabase();
+  // });
 
   it('should return list of users', async () => {
     const res = await request.get('/api/v1/users');

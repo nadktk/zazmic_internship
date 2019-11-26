@@ -8,23 +8,23 @@ jest.setTimeout(10000);
 const agent = supertest.agent(app);
 
 describe('Fees Endpoints', () => {
-  let user;
+  // let user;
 
-  beforeAll(async () => {
-    user = await registerUser();
-    await user.update({
-      is_verified: true,
-    });
+  // beforeAll(async () => {
+  //   user = await registerUser();
+  //   await user.update({
+  //     is_verified: true,
+  //   });
 
-    await agent.post('/api/v1/login').send({
-      email: user.email,
-      password: 'password',
-    });
-  });
+  //   await agent.post('/api/v1/login').send({
+  //     email: user.email,
+  //     password: 'password',
+  //   });
+  // });
 
-  afterAll(async () => {
-    await clearDatabase();
-  });
+  // afterAll(async () => {
+  //   await clearDatabase();
+  // });
 
   it('should show amount of dollars to get PRO status (100 for user without stripe customer id)', async () => {
     const res = await agent.get('/api/v1/fees');
