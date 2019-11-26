@@ -5,25 +5,24 @@ const clearDatabase = require('../../../tests/clearDatabase');
 
 jest.setTimeout(10000);
 
-// const request = supertest(app);
 const agent = supertest.agent(app);
 
 describe('Profile Endpoints', () => {
-  // let user;
+  let user;
 
-  // beforeAll(async () => {
-  //   user = await registerUser();
-  //   await user.update({ is_verified: true });
+  beforeAll(async () => {
+    user = await registerUser();
+    await user.update({ is_verified: true });
 
-  //   await agent.post('/api/v1/login').send({
-  //     email: user.email,
-  //     password: 'password',
-  //   });
-  // });
+    await agent.post('/api/v1/login').send({
+      email: user.email,
+      password: 'password',
+    });
+  });
 
-  // afterAll(async () => {
-  //   await clearDatabase();
-  // });
+  afterAll(async () => {
+    await clearDatabase();
+  });
 
   it('should update current user', async () => {
     const res = await agent.put('/api/v1/profile').send({
