@@ -7,28 +7,24 @@ const mongoose = require('mongoose');
 
 jest.setTimeout(10000);
 
-const agent = supertest.agent(app);
+const request = supertest(app);
 
 describe('Blog Endpoints', () => {
   let user;
   let article;
 
   beforeAll(async () => {
-    try {
-      user = await registerUser();
-      await user.update({
-        is_verified: true,
-      });
+    user = await registerUser();
+    await user.update({
+      is_verified: true,
+    });
 
-      article = await createArticle(user.id);
+    article = await createArticle(user.id);
 
-      await agent.post('/api/v1/login').send({
-        email: user.email,
-        password: 'password',
-      });
-    } catch (err) {
-      console.log(err);
-    }
+    await agent.post('/api/v1/login').send({
+      email: user.email,
+      password: 'password',
+    });
   });
 
   afterAll(async () => {
@@ -36,18 +32,18 @@ describe('Blog Endpoints', () => {
   });
 
   it('should return list of articles', async () => {
-    const res = await agent.get('/api/v1/blog');
+    const res = await request.get('/api/v1/blog');
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
     expect(Array.isArray(res.body.data)).toBe(true);
   });
 
-  // it('should return blog record by its ID', async () => {
-  //   const res = await agent.get(`/api/v1/blog/${article.id}`);
-  //   expect(res.status).toBe(200);
-  //   expect(res.body).toHaveProperty('data');
-  //   expect(res.body.data.authorId).toBe(user.id);
-  // });
+  it('should return blog record by its ID', async () => {
+    const res = await agent.get(`/api/v1/blog/${article.id}`);
+    expect(res.status).toBe(200);
+    expect(res.body).toHaveProperty('data');
+    expect(res.body.data.authorId).toBe(user.id);
+  });
 
   // it('should return 404 status when searching article by wrong ID', async () => {
   //   const res = await agent.get(`/api/v1/blog/${article.id + 1}`);
