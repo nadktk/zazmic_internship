@@ -1,21 +1,17 @@
 const express = require('express');
-const path = require('path');
 const asyncHandler = require('express-async-handler');
 
-const root = path.dirname(process.mainModule.filename);
-const { isLoggedIn } = require(path.join(root, 'passport'));
+const { isLoggedIn } = require('../../../passport');
 
-const { createCharge, getChargesTotal } = require(path.join(
-  root,
-  'services',
-  'stripe-service',
-));
+const {
+  createCharge,
+  getChargesTotal,
+} = require('../../../services/stripe-service');
 
-const { sendPaymentNotification, sendProNotification } = require(path.join(
-  root,
-  'services',
-  'mail-service',
-));
+const {
+  sendPaymentNotification,
+  sendProNotification,
+} = require('../../../services/mail-service');
 
 const PRICE = 100;
 

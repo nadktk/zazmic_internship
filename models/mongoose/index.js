@@ -1,8 +1,6 @@
-const path = require('path');
-
-const ArticlesView = require(path.join(__dirname, 'ArticlesView.js'));
-const ArticlesHistory = require(path.join(__dirname, 'ArticlesHistory.js'));
-const ArticlesLog = require(path.join(__dirname, 'ArticlesLog.js'));
+const ArticlesView = require('../mongoose/ArticlesView');
+const ArticlesHistory = require('../mongoose/ArticlesHistory');
+const ArticlesLog = require('../mongoose/ArticlesLog');
 
 module.exports = {
   ArticlesView,

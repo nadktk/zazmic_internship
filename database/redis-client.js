@@ -1,8 +1,5 @@
 const Redis = require('ioredis');
-const path = require('path');
-
-const root = path.dirname(process.mainModule.filename);
-const { errorLogger } = require(path.join(root, 'logger', 'logger.js'));
+const { errorLogger } = require('../logger/logger');
 
 const redisClient = new Redis(process.env.REDIS_URL);
 

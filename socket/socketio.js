@@ -1,21 +1,10 @@
-const path = require('path');
 const passportSocketIo = require('passport.socketio');
 const redisAdapter = require('socket.io-redis');
 const { RateLimiterRedis } = require('rate-limiter-flexible');
 
-const { infoLogger, errorLogger } = require(path.join(
-  __dirname,
-  '..',
-  'logger',
-  'logger.js',
-));
+const { infoLogger, errorLogger } = require('../logger/logger');
 
-const client = require(path.join(
-  __dirname,
-  '..',
-  'database',
-  'redis-client.js',
-));
+const client = require('../database/redis-client');
 
 const rateLimiter = new RateLimiterRedis({
   redis: client,

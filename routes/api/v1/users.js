@@ -1,16 +1,10 @@
 const express = require('express');
-const path = require('path');
 const asyncHandler = require('express-async-handler');
 
-const root = path.dirname(process.mainModule.filename);
-const { User, Article } = require(path.join(root, 'models', 'sequelize'));
-const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
-const { USERID_ERR } = require(path.join(root, 'utils', 'error-messages'));
-const addPaginationOpts = require(path.join(
-  root,
-  'utils',
-  'add-pagination-opts',
-));
+const { User, Article } = require('../../../models/sequelize');
+const { ArticlesView } = require('../../../models/mongoose');
+const { USERID_ERR } = require('../../../utils/error-messages');
+const addPaginationOpts = require('../../../utils/add-pagination-opts');
 
 const router = express.Router();
 
@@ -99,7 +93,10 @@ router.get(
     const opts = {
       where: { authorId: id },
       include: [{ model: User, as: 'author' }],
-      order: [['publishedAt', 'DESC'], ['id', 'DESC']],
+      order: [
+        ['publishedAt', 'DESC'],
+        ['id', 'DESC'],
+      ],
       limit: 5,
       raw: true,
       nest: true,

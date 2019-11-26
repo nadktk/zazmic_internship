@@ -1,13 +1,10 @@
-const path = require('path');
+const {
+  localStrategy,
+  googleStrategy,
+  facebookStrategy,
+} = require('./strategies');
 
-const root = path.dirname(process.mainModule.filename);
-
-const { localStrategy, googleStrategy, facebookStrategy } = require(path.join(
-  __dirname,
-  'strategies.js',
-));
-
-const { User } = require(path.join(root, 'models', 'sequelize'));
+const { User } = require('../models/sequelize');
 
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) next();

@@ -1,17 +1,14 @@
 const express = require('express');
-const path = require('path');
 
-const root = path.dirname(process.mainModule.filename);
+const { apiLimiter } = require('../../../limiter/limiter');
 
-const { apiLimiter } = require(path.join(root, 'limiter', 'limiter.js'));
-
-const authRouter = require(path.join(__dirname, 'auth.js'));
-const oauthRouter = require(path.join(__dirname, 'oauth.js'));
-const blogRouter = require(path.join(__dirname, 'blog.js'));
-const commentsRouter = require(path.join(__dirname, 'comments.js'));
-const usersRouter = require(path.join(__dirname, 'users.js'));
-const profileRouter = require(path.join(__dirname, 'profile.js'));
-const feesRouter = require(path.join(__dirname, 'fees.js'));
+const authRouter = require('./auth');
+const oauthRouter = require('./oauth');
+const blogRouter = require('./blog');
+const commentsRouter = require('./comments');
+const usersRouter = require('./users');
+const profileRouter = require('./profile');
+const feesRouter = require('./fees');
 
 const apiRouter = express.Router();
 
