@@ -10,6 +10,10 @@ module.exports = async () => {
       truncate: { cascade: true },
     });
   }
-  await mongoose.connect(process.env.MONGO_URL);
+  await mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  });
   await ArticlesView.deleteMany({}).exec();
 };

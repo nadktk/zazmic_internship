@@ -14,13 +14,6 @@ describe('Blog Endpoints', () => {
   let article;
 
   beforeAll(async () => {
-    await mongoose.connect(process.env.MONGO_URL, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-      useFindAndModify: false,
-    });
-    console.log('check mongoose connection', mongoose.connection.readyState);
-
     user = await registerUser();
     await user.update({
       is_verified: true,
@@ -39,6 +32,13 @@ describe('Blog Endpoints', () => {
   });
 
   it('should return list of articles', async () => {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    });
+    console.log('check mongoose connection', mongoose.connection.readyState);
+
     const res = await agent.get('/api/v1/blog');
     expect(res.status).toBe(200);
     expect(res.body).toHaveProperty('data');
