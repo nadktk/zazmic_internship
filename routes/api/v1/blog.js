@@ -72,7 +72,10 @@ router.get(
     // define query options
     const opts = {
       include: [{ model: User, as: 'author' }],
-      order: [['publishedAt', 'DESC'], ['id', 'DESC']],
+      order: [
+        ['publishedAt', 'DESC'],
+        ['id', 'DESC'],
+      ],
       limit: 5,
       raw: true,
       nest: true,
@@ -167,12 +170,18 @@ router.put(
 
     // MySQL operations: find article by id and update it
     const article = await Article.findByPk(id);
-    if (!article) throw new Error(BLOGID_ERR);
+    if (!article) {
+      res.status(404);
+      throw new Error(BLOGID_ERR);
+    }
 
     const oldArticlePicture = article.picture;
 
     // check permissions
-    if (article.authorId !== req.user.id) throw new Error(PERMISSION_ERR);
+    if (article.authorId !== req.user.id) {
+      res.status(403);
+      throw new Error(PERMISSION_ERR);
+    }
     await article.update(newArticleData);
 
     // delete old article picture
@@ -240,10 +249,14 @@ router.delete(
 
     // MySQL operations: delete article record
     const articleToDestroy = await Article.findByPk(id);
-    if (!articleToDestroy) throw new Error(BLOGID_ERR);
+    if (!articleToDestroy) {
+      res.status(404);
+      throw new Error(BLOGID_ERR);
+    }
 
     // check permissions
     if (articleToDestroy.authorId !== req.user.id) {
+      res.status(403);
       throw new Error(PERMISSION_ERR);
     }
 

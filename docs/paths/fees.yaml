@@ -1,0 +1,59 @@
+paths:
+  # amount to go PRO
+  /api/v1/fees:
+    get:
+      tags:
+        - Fees
+      summary: Returns amount of dollars to be paid for the current user to become PRO
+      responses:
+        200:
+          description: amount of dollars
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      amount:
+                        type: number
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+
+    # new charge
+    put:
+      tags:
+        - Fees
+      summary: Creates a new Stripe charge and sets PRO status if it is necessary
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                amount:
+                  type: number
+                  description: amount of dollars to charge
+              required:
+                - amount
+      responses:
+        200:
+          description: amount of dollars
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      amount:
+                        type: number
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'

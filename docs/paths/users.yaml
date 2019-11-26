@@ -1,0 +1,48 @@
+paths:
+  # get all users
+  /api/v1/users:
+    get:
+      tags:
+        - Users
+      summary: Gets a list of all users
+      responses:
+        200:
+          description: Array of users
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/500'
+
+  # get user by ID
+  /api/v1/users/{userId}:
+    get:
+      tags:
+        - Users
+      summary: Get user by ID
+      parameters:
+        - in: path
+          name: userId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'

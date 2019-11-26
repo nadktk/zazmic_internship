@@ -1,0 +1,72 @@
+paths:
+  # google authentication strategy
+  /api/v1/oauth/google:
+    get:
+      tags:
+        - Auth
+      summary: Authentication with Google API
+      responses:
+        302:
+          $ref: '#/components/responses/302'
+        500:
+          $ref: '#/components/responses/500'
+
+    post:
+      tags:
+        - Auth
+      summary: Callback URL (Google)
+      parameters:
+        - in: query
+          name: code
+          description: Access token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/500'
+
+  # facebook authentication strategy
+  /api/v1/oauth/facebook:
+    get:
+      tags:
+        - Auth
+      summary: Authentication with Facebook API
+      responses:
+        302:
+          $ref: '#/components/responses/302'
+        500:
+          $ref: '#/components/responses/500'
+
+    post:
+      tags:
+        - Auth
+      summary: Callback URL (Facebook)
+      parameters:
+        - in: query
+          name: code
+          description: Access token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        500:
+          $ref: '#/components/responses/500'

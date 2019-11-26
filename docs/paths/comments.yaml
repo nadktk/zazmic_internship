@@ -1,0 +1,100 @@
+paths:
+  # get all articles
+  /api/v1/blog/{articleId}/comments:
+    get:
+      tags:
+        - Comments
+      summary: Gets a list of all article's comments
+      parameters:
+        - in: query
+          name: after
+          schema:
+            type: string
+          description: Continuation token
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: Array of comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Comment'
+        500:
+          $ref: '#/components/responses/500'
+
+    # post comment
+    post:
+      tags:
+        - Comments
+      summary: Post a new comment
+      parameters:
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/comment'
+      responses:
+        200:
+          description: Array of comments
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/Comment'
+        401:
+          $ref: '#/components/responses/401'
+        422:
+          $ref: '#/components/responses/422'
+        500:
+          $ref: '#/components/responses/500'
+
+  # delete comment by ID
+  /api/v1/blog/{articleId}/comments/{commentId}:
+    delete:
+      tags:
+        - Comments
+      summary: Delete comment by ID
+      parameters:
+        - in: query
+          name: after
+          schema:
+            type: string
+          description: Continuation token
+        - in: path
+          name: articleId
+          schema:
+            type: integer
+          required: true
+        - in: path
+          name: commentId
+          schema:
+            type: integer
+          required: true
+      responses:
+        200:
+          description: The comment was successfully deleted, empty response
+        401:
+          $ref: '#/components/responses/401'
+        403:
+          $ref: '#/components/responses/403'
+        404:
+          $ref: '#/components/responses/404'
+        500:
+          $ref: '#/components/responses/500'

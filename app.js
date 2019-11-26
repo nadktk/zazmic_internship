@@ -15,6 +15,8 @@ const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
 
 const { passportInit } = require(path.join(__dirname, 'passport'));
 
+const swaggerDoc = require(path.join(__dirname, 'docs', 'swagger-config'));
+
 // logger
 const { infoLogger, errorLogger } = require(path.join(
   __dirname,
@@ -65,6 +67,10 @@ app.use(passport.session());
 
 // use routers
 app.use('/api/v1/', apiRoutes);
+
+// swagger docs
+swaggerDoc(app);
+
 app.get('*', (req, res) => {
   https.get(process.env.FRONTEND_URL, (response) => response.pipe(res));
 });
@@ -82,6 +88,10 @@ app.locals.io = io;
 app.use((err, req, res, next) => {
   if (res.statusCode === 200) {
     res.status(500).send({
+      error: err.message,
+    });
+  } else {
+    res.send({
       error: err.message,
     });
   }

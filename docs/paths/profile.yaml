@@ -1,0 +1,113 @@
+paths:
+  # update profile
+  /api/v1/profile:
+    put:
+      tags:
+        - Profile
+      summary: Update user profile (change first name or last name)
+      requestBody:
+        required: true
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/requestBodies/userUpdate'
+          application/json:
+            schema:
+              $ref: '#/components/requestBodies/userUpdate'
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/401'
+        422:
+          $ref: '#/components/responses/422'
+        500:
+          $ref: '#/components/responses/500'
+
+    # delete profile
+    delete:
+      tags:
+        - Profile
+      summary: Delete user profile
+      responses:
+        200:
+          description: Empty response (profile deleted successfully)
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+
+  # update profile (change picture)
+  /api/v1/profile/picture:
+    put:
+      tags:
+        - Profile
+      summary: Update user profile (change picture)
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                picture:
+                  type: string
+                  format: binary
+                  description: profile picture
+              required:
+                - picture
+      responses:
+        200:
+          description: An object with user's profile picture
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      picture:
+                        type: string
+                        format: uri
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'
+
+  # update profile (add stripe card)
+  /api/v1/profile/card:
+    put:
+      tags:
+        - Profile
+      summary: Update user profile (add stripe card)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+                  description: stripe token
+      responses:
+        200:
+          description: An object with user details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    $ref: '#/components/schemas/User'
+        401:
+          $ref: '#/components/responses/401'
+        500:
+          $ref: '#/components/responses/500'

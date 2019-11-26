@@ -1,0 +1,37 @@
+components:
+  responses:
+    302:
+      description: Authentication redirection
+    401:
+      description: Unauthorized request
+    403:
+      description: Forbidden action
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+    404:
+      description: The specified resource was not found
+    422:
+      description: Unprocessable Entity
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              errors:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ValidationError'
+    500:
+      description: Server error
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string

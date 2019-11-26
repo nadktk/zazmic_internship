@@ -11,7 +11,9 @@ const { User } = require(path.join(root, 'models', 'sequelize'));
 
 exports.isLoggedIn = (req, res, next) => {
   if (req.isAuthenticated()) next();
-  else next(new Error('Route needs authentication'));
+  else {
+    res.status(401).send();
+  }
 };
 
 exports.passportInit = (passport) => {
