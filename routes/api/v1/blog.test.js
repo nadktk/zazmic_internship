@@ -1,9 +1,11 @@
-/* eslint-disable */
 const supertest = require('supertest');
 const app = require('../../../app.js');
-const { registerUser, createArticle } = require('../../../tests/helpers');
+const {
+  registerUser,
+  createArticle,
+  mongooseConnection,
+} = require('../../../tests/helpers');
 const clearDatabase = require('../../../tests/clearDatabase');
-const mongoose = require('mongoose');
 
 jest.setTimeout(10000);
 
@@ -14,6 +16,7 @@ describe('Blog Endpoints', () => {
   let article;
 
   beforeAll(async () => {
+    await mongooseConnection();
     user = await registerUser();
     await user.update({
       is_verified: true,

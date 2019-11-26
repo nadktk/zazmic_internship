@@ -1,7 +1,11 @@
 /* eslint-disable */
 const supertest = require('supertest');
 const app = require('../../../app.js');
-const { registerUser, createArticle } = require('../../../tests/helpers');
+const {
+  registerUser,
+  createArticle,
+  mongooseConnection,
+} = require('../../../tests/helpers');
 const clearDatabase = require('../../../tests/clearDatabase');
 
 jest.setTimeout(10000);
@@ -16,6 +20,7 @@ describe('Users Endpoints', () => {
   const n = 5;
 
   beforeAll(async () => {
+    await mongooseConnection();
     user1 = await registerUser();
     user2 = await registerUser();
     for (let i = 0; i < n + 1; i++) {

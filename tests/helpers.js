@@ -1,4 +1,6 @@
 const faker = require('faker');
+const mongoose = require('mongoose');
+
 const { User, Article, Comment } = require('../models/sequelize');
 
 exports.registerUser = async () => {
@@ -29,4 +31,12 @@ exports.createComment = async (authorId, articleId) => {
     articleId,
   });
   return comment;
+};
+
+exports.mongooseConnection = async () => {
+  await mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+  });
 };

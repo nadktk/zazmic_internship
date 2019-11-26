@@ -4,6 +4,7 @@ const {
   registerUser,
   createArticle,
   createComment,
+  mongooseConnection,
 } = require('../../../tests/helpers');
 const clearDatabase = require('../../../tests/clearDatabase');
 
@@ -19,6 +20,7 @@ describe('Comments Endpoints', () => {
   let comment2;
 
   beforeAll(async () => {
+    await mongooseConnection();
     user1 = await registerUser();
     await user1.update({
       is_verified: true,

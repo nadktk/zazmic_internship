@@ -1,6 +1,6 @@
 const supertest = require('supertest');
 const app = require('../../../app.js');
-const { registerUser } = require('../../../tests/helpers');
+const { registerUser, mongooseConnection } = require('../../../tests/helpers');
 const clearDatabase = require('../../../tests/clearDatabase');
 
 jest.setTimeout(10000);
@@ -11,6 +11,7 @@ describe('Fees Endpoints', () => {
   let user;
 
   beforeAll(async () => {
+    await mongooseConnection();
     user = await registerUser();
     await user.update({
       is_verified: true,
