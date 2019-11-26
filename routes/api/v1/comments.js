@@ -1,6 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { Op } = require('sequelize');
+const { io } = require('../../../server');
 
 const { isLoggedIn } = require('../../../passport');
 
@@ -83,7 +84,6 @@ router.post(
     newComment.author = req.user;
 
     // emit socketio event
-    const { io } = req.app.locals;
     io.to(`room_${articleId}`).emit('comment', {
       action: 'create',
       data: { comment: newComment },
@@ -120,7 +120,6 @@ router.delete(
     }
 
     // emit socketio event
-    const { io } = req.app.locals;
     io.to(`room_${articleId}`).emit('comment', {
       action: 'destroy',
       data: { comment: commentToDestroy },

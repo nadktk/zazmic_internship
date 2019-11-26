@@ -16,7 +16,6 @@ const server = http.createServer(app);
 const io = socketio(server);
 
 socketioInit(io, sessionConfig);
-app.locals.io = io;
 
 const port = process.env.PORT;
 
@@ -53,3 +52,5 @@ startServer().catch((err) => {
   });
   errorLogger.end(() => process.exit(1));
 });
+
+exports.io = io;
