@@ -1,12 +1,7 @@
 /* eslint-disable no-console */
-const path = require('path');
 const mongoose = require('mongoose');
 
-const { ArticlesHistory, ArticlesLog } = require(path.join(
-  __dirname,
-  'models',
-  'mongoose',
-));
+const { ArticlesHistory, ArticlesLog } = require('./models/mongoose');
 
 // set up result messages
 process.on('exit', (code) => (code === 0

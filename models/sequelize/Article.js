@@ -1,8 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
-const path = require('path');
 
-const root = path.dirname(process.mainModule.filename);
-const sequelize = require(path.join(root, 'database', 'db-mysql.js'));
+const sequelize = require('../../database/db-mysql');
 
 class Article extends Model {}
 

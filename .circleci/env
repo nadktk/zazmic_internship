@@ -1,5 +1,4 @@
-FRONTED_URL=https://test.com
+FRONTEND_URL=https://test.com
+SECRET=test
 DATABASE_URL=mysql://user:password@localhost:3306/database
-MONGO_URL=mongodb://user:password@localhost:27017/database
-SESSION_SECRET=test
-EMAIL_SECRET=test
+MONGO_URL=mongodb+srv://user:password@localhost:27017/database

@@ -1,20 +1,14 @@
 const express = require('express');
-const path = require('path');
 const multer = require('multer');
 const asyncHandler = require('express-async-handler');
 
-const root = path.dirname(process.mainModule.filename);
-const { isLoggedIn } = require(path.join(root, 'passport'));
-const { articleValidation } = require(path.join(root, 'validation'));
-const addPaginationOpts = require(path.join(
-  root,
-  'utils',
-  'add-pagination-opts',
-));
+const { isLoggedIn } = require('../../../passport');
+const { articleValidation } = require('../../../validation');
+const addPaginationOpts = require('../../../utils/add-pagination-opts');
 
 // multer & GCS
-const multerGCStorage = require(path.join(root, 'gcs', 'multer-gcs.js'));
-const { deleteFile } = require(path.join(root, 'services', 'gcs-service.js'));
+const multerGCStorage = require('../../../gcs/multer-gcs');
+const { deleteFile } = require('../../../services/gcs-service');
 
 const storage = multerGCStorage({
   prefix: 'nadiia/articles',
@@ -32,22 +26,14 @@ const upload = multer({
 });
 
 // models
-const { User, Article } = require(path.join(root, 'models', 'sequelize'));
-const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
+const { User, Article } = require('../../../models/sequelize');
+const { ArticlesView } = require('../../../models/mongoose');
 
 // loggers
-const { infoLogger, historyLogger } = require(path.join(
-  root,
-  'logger',
-  'logger.js',
-));
+const { infoLogger, historyLogger } = require('../../../logger/logger');
 
 // errors messages
-const { BLOGID_ERR, PERMISSION_ERR } = require(path.join(
-  root,
-  'utils',
-  'error-messages',
-));
+const { BLOGID_ERR, PERMISSION_ERR } = require('../../../utils/error-messages');
 
 // extract Article data from request
 const extractData = (req) => ({

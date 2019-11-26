@@ -1,4 +1,3 @@
-const path = require('path');
 const express = require('express');
 const session = require('express-session');
 const https = require('https');
@@ -9,29 +8,21 @@ const csrf = require('csurf');
 const socketio = require('socket.io');
 const http = require('http');
 
-const socketioInit = require(path.join(__dirname, 'socket', 'socketio'));
+const socketioInit = require('./socket/socketio');
 
-const apiRoutes = require(path.join(__dirname, 'routes', 'api', 'v1'));
+const apiRoutes = require('./routes/api/v1');
 
-const { passportInit } = require(path.join(__dirname, 'passport'));
+const { passportInit } = require('./passport');
 
-const swaggerDoc = require(path.join(__dirname, 'docs', 'swagger-config'));
+const swaggerDoc = require('./docs/swagger-config');
 
 // logger
-const { infoLogger, errorLogger } = require(path.join(
-  __dirname,
-  'logger',
-  'logger.js',
-));
+const { infoLogger, errorLogger } = require('./logger/logger');
 
 //  databases
-const dbMysql = require(path.join(__dirname, 'database', 'db-mysql.js'));
-const dbMongo = require(path.join(__dirname, 'database', 'db-mongo.js'));
-const redisClient = require(path.join(
-  __dirname,
-  'database',
-  'redis-client.js',
-));
+const dbMysql = require('./database/db-mysql');
+const dbMongo = require('./database/db-mongo');
+const redisClient = require('./database/redis-client.js');
 
 const app = express();
 
@@ -138,3 +129,5 @@ startServer().catch((err) => {
   });
   errorLogger.end(() => process.exit(1));
 });
+
+module.exports = server;

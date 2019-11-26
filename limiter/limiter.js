@@ -1,10 +1,7 @@
 const rateLimit = require('express-rate-limit');
 const RedisStore = require('rate-limit-redis');
-const path = require('path');
 
-const root = path.dirname(process.mainModule.filename);
-
-const redisClient = require(path.join(root, 'database', 'redis-client.js'));
+const redisClient = require('../database/redis-client');
 
 const apiLimiterStore = new RedisStore({
   prefix: 'nadia:rl:api_limiter:',

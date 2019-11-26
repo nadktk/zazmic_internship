@@ -1,23 +1,21 @@
 const express = require('express');
-const path = require('path');
 const asyncHandler = require('express-async-handler');
 const { Op } = require('sequelize');
 
-const root = path.dirname(process.mainModule.filename);
-const authService = require(path.join(root, 'services', 'auth-service.js'));
-const { createCard, createCustomer } = require(path.join(
-  root,
-  'services',
-  'stripe-service.js',
-));
-const { isLoggedIn } = require(path.join(root, 'passport'));
-const { editProfileValidation } = require(path.join(root, 'validation'));
+const multer = require('multer');
+const authService = require('../../../services/auth-service');
+
+const {
+  createCard,
+  createCustomer,
+} = require('../../../services/stripe-service');
+const { isLoggedIn } = require('../../../passport');
+const { editProfileValidation } = require('../../../validation');
 
 // multer & GCS
-const multer = require('multer');
 
-const gcStorage = require(path.join(root, 'gcs', 'multer-gcs.js'));
-const { deleteFile } = require(path.join(root, 'services', 'gcs-service'));
+const gcStorage = require('../../../gcs/multer-gcs');
+const { deleteFile } = require('../../../services/gcs-service');
 
 const storage = gcStorage({
   prefix: 'nadiia/avatars',
@@ -35,11 +33,11 @@ const upload = multer({
 });
 
 // models
-const { Article } = require(path.join(root, 'models', 'sequelize'));
-const { ArticlesView } = require(path.join(root, 'models', 'mongoose'));
+const { Article } = require('../../../models/sequelize');
+const { ArticlesView } = require('../../../models/mongoose');
 
 // logger
-const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
+const { infoLogger } = require('../../../logger/logger');
 
 const router = express.Router();
 
