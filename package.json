@@ -9,8 +9,8 @@
     "history": "env-cmd node history.js",
     "mysql-migrate": "env-cmd npx sequelize-cli db:migrate",
     "undo-migrate": "env-cmd npx sequelize-cli db:migrate:undo",
-    "test": "env-cmd -f ./.env-test jest routes/api/v1/blog.test.js --runInBand --forceExit --coverage",
-    "test-circleci": "env-cmd -f ./.circleci/env jest routes/api/v1/blog.test.js --runInBand --forceExit"
+    "test": "env-cmd -f ./.env-test jest --runInBand --forceExit --coverage",
+    "test-circleci": "env-cmd -f ./.circleci/env jest --runInBand --forceExit"
   },
   "author": "nadktk",
   "license": "MIT",
