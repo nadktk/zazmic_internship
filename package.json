@@ -2,7 +2,7 @@
   "name": "homework-5",
   "version": "1.0.0",
   "description": "api server express REST",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "lint": "eslint --fix .",
     "dev": "env-cmd nodemon .",

@@ -1,14 +1,10 @@
 const express = require('express');
-const session = require('express-session');
 const https = require('https');
 const bodyParser = require('body-parser');
-const RedisStore = require('connect-redis')(session);
 const passport = require('passport');
 const csrf = require('csurf');
-const socketio = require('socket.io');
-const http = require('http');
-
-const socketioInit = require('./socket/socketio');
+const session = require('express-session');
+const sessionConfig = require('./config/sessionConfig');
 
 const apiRoutes = require('./routes/api/v1');
 
@@ -17,12 +13,7 @@ const { passportInit } = require('./passport');
 const swaggerDoc = require('./docs/swagger-config');
 
 // logger
-const { infoLogger, errorLogger } = require('./logger/logger');
-
-//  databases
-const dbMysql = require('./database/db-mysql');
-const dbMongo = require('./database/db-mongo');
-const redisClient = require('./database/redis-client.js');
+const { errorLogger } = require('./logger/logger');
 
 const app = express();
 
@@ -33,16 +24,6 @@ app.use(bodyParser.json());
 app.set('trust proxy', 1);
 
 // session
-const sessionConfig = {
-  store: new RedisStore({ client: redisClient, prefix: 'nadia:session:' }),
-  saveUninitialized: false,
-  resave: false,
-  secret: process.env.SECRET,
-  name: 'sid',
-  cookie: {
-    maxAge: 48 * 3600 * 1000,
-  },
-};
 app.use(session(sessionConfig));
 
 // CSRF
@@ -68,13 +49,6 @@ app.get('*', (req, res) => {
 
 passportInit(passport);
 
-// socketio
-const server = http.createServer(app);
-const io = socketio(server);
-
-socketioInit(io, sessionConfig);
-app.locals.io = io;
-
 // errors handling
 app.use((err, req, res, next) => {
   if (res.statusCode === 200) {
@@ -94,40 +68,4 @@ app.use((err, req, res, next) => {
   });
 });
 
-const port = process.env.PORT;
-
-// connect databases and start server
-const startServer = async () => {
-  await dbMongo.connect().catch((err) => {
-    throw new Error(`Unable to connect to MongoDB database (${err.message})`);
-  });
-
-  await dbMysql.authenticate().catch((err) => {
-    throw new Error(`Unable to connect to MySQL database (${err.message})`);
-  });
-
-  infoLogger.log({
-    label: 'mysql',
-    level: 'info',
-    message: 'Connected to MySQL',
-  });
-
-  server.listen(port, () => {
-    infoLogger.log({
-      label: 'server',
-      level: 'info',
-      message: `Server is running on port ${port}`,
-    });
-  });
-};
-
-startServer().catch((err) => {
-  errorLogger.log({
-    level: 'error',
-    message: err.message,
-    metadata: err.stack,
-  });
-  errorLogger.end(() => process.exit(1));
-});
-
-module.exports = server;
+module.exports = app;
