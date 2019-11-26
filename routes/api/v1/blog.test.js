@@ -1,17 +1,26 @@
+/* eslint-disable */
 const supertest = require('supertest');
 const app = require('../../../app.js');
 const { registerUser, createArticle } = require('../../../tests/helpers');
 const clearDatabase = require('../../../tests/clearDatabase');
+const mongoose = require('mongoose');
 
 jest.setTimeout(10000);
 
 const agent = supertest.agent(app);
 
 describe('Blog Endpoints', () => {
-  let user; let
-    article;
+  let user;
+  let article;
 
   beforeAll(async () => {
+    await mongoose.connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+      useFindAndModify: false,
+    });
+    console.log('check mongoose connection', mongoose.connection.readyState);
+
     user = await registerUser();
     await user.update({
       is_verified: true,
