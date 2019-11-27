@@ -1,8 +1,6 @@
 const Sequelize = require('sequelize');
-const path = require('path');
 
-const root = path.dirname(process.mainModule.filename);
-const { queryLogger } = require(path.join(root, 'logger', 'logger.js'));
+const { queryLogger } = require('../logger/logger');
 
 const sequelize = new Sequelize(process.env.DATABASE_URL, {
   benchmark: true,

@@ -1,25 +1,23 @@
 const express = require('express');
-const path = require('path');
 const asyncHandler = require('express-async-handler');
 const { Op } = require('sequelize');
+const { io } = require('../../../io');
 
-const root = path.dirname(process.mainModule.filename);
-const { isLoggedIn } = require(path.join(root, 'passport'));
+const { isLoggedIn } = require('../../../passport');
 
 // models
-const { User, Comment } = require(path.join(root, 'models', 'sequelize'));
+const { User, Comment } = require('../../../models/sequelize');
 
 // loggers
-const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
+const { infoLogger } = require('../../../logger/logger');
 
-const { commentValidation } = require(path.join(root, 'validation'));
+const { commentValidation } = require('../../../validation');
 
 // errors messages
-const { COMMENTID_ERR, PERMISSION_ERR } = require(path.join(
-  root,
-  'utils',
-  'error-messages',
-));
+const {
+  COMMENTID_ERR,
+  PERMISSION_ERR,
+} = require('../../../utils/error-messages');
 
 const router = express.Router();
 
@@ -86,7 +84,6 @@ router.post(
     newComment.author = req.user;
 
     // emit socketio event
-    const { io } = req.app.locals;
     io.to(`room_${articleId}`).emit('comment', {
       action: 'create',
       data: { comment: newComment },
@@ -123,7 +120,6 @@ router.delete(
     }
 
     // emit socketio event
-    const { io } = req.app.locals;
     io.to(`room_${articleId}`).emit('comment', {
       action: 'destroy',
       data: { comment: commentToDestroy },

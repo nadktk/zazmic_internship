@@ -1,25 +1,18 @@
 const express = require('express');
-const path = require('path');
 const asyncHandler = require('express-async-handler');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 
-const root = path.dirname(process.mainModule.filename);
+const { loginLimiter } = require('../../../limiter/limiter');
 
-const { loginLimiter } = require(path.join(root, 'limiter', 'limiter.js'));
-
-const authService = require(path.join(root, 'services', 'auth-service.js'));
-const { sendVerification } = require(path.join(
-  root,
-  'services',
-  'mail-service.js',
-));
-const { infoLogger } = require(path.join(root, 'logger', 'logger.js'));
-const { User } = require(path.join(root, 'models', 'sequelize'));
-const { userCreateValidation, userLoginValidation } = require(path.join(
-  root,
-  'validation',
-));
+const authService = require('../../../services/auth-service');
+const { sendVerification } = require('../../../services/mail-service');
+const { infoLogger } = require('../../../logger/logger');
+const { User } = require('../../../models/sequelize');
+const {
+  userCreateValidation,
+  userLoginValidation,
+} = require('../../../validation');
 
 const router = express.Router();
 

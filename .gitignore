@@ -2,3 +2,5 @@
 .env
 ecosystem.config.js
 gcs/zazmic-blog-storage.json
+coverage/
+.env-test

@@ -1,12 +1,6 @@
 const mongoose = require('mongoose');
-const path = require('path');
 
-const { infoLogger, errorLogger, queryLogger } = require(path.join(
-  __dirname,
-  '..',
-  'logger',
-  'logger.js',
-));
+const { infoLogger, errorLogger, queryLogger } = require('../logger/logger');
 
 const mongoUrl = process.env.MONGO_URL;
 

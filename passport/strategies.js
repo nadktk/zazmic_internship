@@ -1,22 +1,14 @@
 /* eslint-disable no-underscore-dangle */
-const path = require('path');
-
-const root = path.dirname(process.mainModule.filename);
 const LocalStrategy = require('passport-local');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const FacebookStrategy = require('passport-facebook');
 const bcrypt = require('bcryptjs');
 
-const dbMysql = require(path.join(root, 'database', 'db-mysql.js'));
+const dbMysql = require('../database/db-mysql');
 
-const { User, Account } = require(path.join(root, 'models', 'sequelize'));
+const { User, Account } = require('../models/sequelize');
 
-const { infoLogger } = require(path.join(
-  __dirname,
-  '..',
-  'logger',
-  'logger.js',
-));
+const { infoLogger } = require('../logger/logger');
 
 /**
  * Local Strategy
