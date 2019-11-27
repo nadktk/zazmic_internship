@@ -1,7 +1,7 @@
 const express = require('express');
 const asyncHandler = require('express-async-handler');
 const { Op } = require('sequelize');
-const { io } = require('../../../server');
+const { io } = require('../../../io');
 
 const { isLoggedIn } = require('../../../passport');
 

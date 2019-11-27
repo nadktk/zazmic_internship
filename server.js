@@ -1,8 +1,4 @@
-const http = require('http');
-const socketio = require('socket.io');
-const socketioInit = require('./socket/socketio');
-const sessionConfig = require('./config/sessionConfig');
-const app = require('./app');
+const { server } = require('./io');
 
 //  databases
 const dbMysql = require('./database/db-mysql');
@@ -10,12 +6,6 @@ const dbMongo = require('./database/db-mongo');
 
 // logger
 const { infoLogger, errorLogger } = require('./logger/logger');
-
-// socketio
-const server = http.createServer(app);
-const io = socketio(server);
-
-socketioInit(io, sessionConfig);
 
 const port = process.env.PORT;
 
@@ -52,5 +42,3 @@ startServer().catch((err) => {
   });
   errorLogger.end(() => process.exit(1));
 });
-
-exports.io = io;
